@@ -1,18 +1,17 @@
 " ------------------------------------------------------------------------------
-" File:		thlnkuri.vim -- module for parsing URIs
-"			        Part of the Thlnk plugin, see ./thlnk.vim
+" File:		utluri.vim -- module for parsing URIs
+"			        Part of the Utl plugin, see ./utl.vim
 " Author:	Stefan Bittner <stb@bf-consulting.de>
 " Licence:	This program is free software; you can redistribute it and/or
 "		modify it under the terms of the GNU General Public License.
 "		See http://www.gnu.org/copyleft/gpl.txt
-" Last Change:	13-Jun-2002/STB
-" Version:	thlnk-1.2
+" Version:	utl 2.0, $Revision: 1.7 $
 " ------------------------------------------------------------------------------
 
 " Parses URI-References.
-" (Can be used independantly from Thlnk.)
+" (Can be used independantly from Utl.)
 " (An URI-Reference is an URI + fragment: myUri#myFragment.
-" See also <URL:vim_h:thlnk-uri-refs>.
+" See also <URL:vimhelp:utl-uri-refs>.
 " Aims to be compliant with <URL:http://www.ietf.org/rfc/rfc2396.txt>
 "
 " NOTE: The distinction between URI and URI-Reference won't be hold out
@@ -24,47 +23,47 @@
 "   " Parse an URI
 "   let uri = 'http://www.google.com/search?q=vim#tn=ubiquitous'
 "
-"   let scheme = ThlnkUri_scheme(uri)
-"   let authority = ThlnkUri_authority(uri)
-"   let path = ThlnkUri_path(uri)
-"   let query = ThlnkUri_query(uri)
-"   let fragment = ThlnkUri_fragment(uri)
+"   let scheme = UtlUri_scheme(uri)
+"   let authority = UtlUri_authority(uri)
+"   let path = UtlUri_path(uri)
+"   let query = UtlUri_query(uri)
+"   let fragment = UtlUri_fragment(uri)
 "
 "   " Rebuild the URI
-"   let uriRebuilt = ThlnkUri_build(scheme, authority, path, query, fragment)
+"   let uriRebuilt = UtlUri_build(scheme, authority, path, query, fragment)
 "
-"   " ThlnkUri_build a new URI
-"   let uriNew = ThlnkUri_build('file', 'localhost', 'path/to/file', '<undef>', 'myFrag')
+"   " UtlUri_build a new URI
+"   let uriNew = UtlUri_build('file', 'localhost', 'path/to/file', '<undef>', 'myFrag')
 "
-"   let unesc = ThlnkUri_unescape('a%20b%3f')    " -> unesc==`a b?'
+"   let unesc = UtlUri_unescape('a%20b%3f')    " -> unesc==`a b?'
 "   
 " Details:
 "   Authority, query and fragment can have the <undef> value (literally!)
 "   (similar to undef-value in Perl). That's distinguished from
-"   _empty_ values!  Example: http:/// yields ThlnkUri_authority=='' where as
-"   http:/path/to/file yields ThlnkUri_authority=='<undef>'.
+"   _empty_ values!  Example: http:/// yields UtlUri_authority=='' where as
+"   http:/path/to/file yields UtlUri_authority=='<undef>'.
 "   See also
-"   <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=Note that we must be careful>
+"   <URL:http://www.ietf.org/rfc/rfc2396.txt#Note that we must be careful>
 "
 " Internal Note:
 "   Ist not very performant in typical usage (but clear).
-"   s:ThlnkUri_parse executed n times for getting n components of same uri
+"   s:UtlUri_parse executed n times for getting n components of same uri
 
-if exists("loaded_thlnkuri")
+if exists("loaded_utl_uri")
     finish
 endif
-let loaded_thlnkuri = 1
+let loaded_utl_uri = 1
 let s:save_cpo = &cpo
 set cpo&vim
+let g:utl_uri_vim = expand("<sfile>")
 
-let thlnkuri_vim = expand("<sfile>")
 
 "------------------------------------------------------------------------------
-" Parses `uri'. Used by ``public'' functions like ThlnkUri_path().
+" Parses `uri'. Used by ``public'' functions like UtlUri_path().
 " - idx selects the component (see below)
-fu! s:ThlnkUri_parse(uri, idx)
+fu! s:UtlUri_parse(uri, idx)
 
-    " See <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^B. Parsing a URI Reference>
+    " See <URL:http://www.ietf.org/rfc/rfc2396.txt#^B. Parsing a URI Reference>
     "
     " ^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?
     "  12            3  4          5       6  7        8 9
@@ -81,63 +80,62 @@ fu! s:ThlnkUri_parse(uri, idx)
 endfu
 
 "-------------------------------------------------------------------------------
-fu! ThlnkUri_scheme(uri)
-    let scheme = s:ThlnkUri_parse(a:uri, 2)
+fu! UtlUri_scheme(uri)
+    let scheme = s:UtlUri_parse(a:uri, 2)
     " empty scheme impossible (an uri like `://a/b' is interpreted as path = `://a/b').
     if( scheme == '' )
 	return '<undef>'
     endif
     " make lowercase, see
-    " <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=resiliency>
+    " <URL:http://www.ietf.org/rfc/rfc2396.txt#resiliency>
     return tolower( scheme )
 endfu
 
 "-------------------------------------------------------------------------------
-fu! ThlnkUri_opaque(uri)
-"    echo 'DBG opaque=`' . s:ThlnkUri_parse(a:uri, 3) . s:ThlnkUri_parse(a:uri, 5) . s:ThlnkUri_parse(a:uri, 6) . "'"
-    return s:ThlnkUri_parse(a:uri, 3) . s:ThlnkUri_parse(a:uri, 5) . s:ThlnkUri_parse(a:uri, 6)
+fu! UtlUri_opaque(uri)
+    return s:UtlUri_parse(a:uri, 3) . s:UtlUri_parse(a:uri, 5) . s:UtlUri_parse(a:uri, 6)
 endfu
 
 "-------------------------------------------------------------------------------
-fu! ThlnkUri_authority(uri)
-    if  s:ThlnkUri_parse(a:uri, 3) == s:ThlnkUri_parse(a:uri, 4)
+fu! UtlUri_authority(uri)
+    if  s:UtlUri_parse(a:uri, 3) == s:UtlUri_parse(a:uri, 4)
 	return '<undef>'
     else 
-	return s:ThlnkUri_parse(a:uri, 4)
+	return s:UtlUri_parse(a:uri, 4)
     endif
 endfu
 
 "-------------------------------------------------------------------------------
-fu! ThlnkUri_path(uri)
-    return s:ThlnkUri_parse(a:uri, 5)
+fu! UtlUri_path(uri)
+    return s:UtlUri_parse(a:uri, 5)
 endfu
 
 "-------------------------------------------------------------------------------
-fu! ThlnkUri_query(uri)
-    if  s:ThlnkUri_parse(a:uri, 6) == s:ThlnkUri_parse(a:uri, 7)
+fu! UtlUri_query(uri)
+    if  s:UtlUri_parse(a:uri, 6) == s:UtlUri_parse(a:uri, 7)
 	return '<undef>'
     else 
-	return s:ThlnkUri_parse(a:uri, 7)
+	return s:UtlUri_parse(a:uri, 7)
     endif
 endfu
 
 "-------------------------------------------------------------------------------
-fu! ThlnkUri_fragment(uri)
-    if  s:ThlnkUri_parse(a:uri, 8) == s:ThlnkUri_parse(a:uri, 9)
+fu! UtlUri_fragment(uri)
+    if  s:UtlUri_parse(a:uri, 8) == s:UtlUri_parse(a:uri, 9)
 	return '<undef>'
     else 
-	return s:ThlnkUri_parse(a:uri, 9)
+	return s:UtlUri_parse(a:uri, 9)
     endif
 endfu
 
 
 "------------------------------------------------------------------------------
-" Concatenate uri components into an uri -- opposite of s:ThlnkUri_parse
-" see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=are recombined>
+" Concatenate uri components into an uri -- opposite of s:UtlUri_parse
+" see <URL:http://www.ietf.org/rfc/rfc2396.txt#are recombined>
 "
-" - it should hold: s:ThlnkUri_parse + ThlnkUri_build = exactly the original Uri
+" - it should hold: s:UtlUri_parse + UtlUri_build = exactly the original Uri
 "
-fu! ThlnkUri_build(scheme, authority, path, query, fragment)
+fu! UtlUri_build(scheme, authority, path, query, fragment)
 
 
     let result = ""
@@ -168,57 +166,52 @@ endfu
 " `base' uri and returns it.
 "
 " See
-" <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^5.2. Resolving Relative References>
+" <URL:http://www.ietf.org/rfc/rfc2396.txt#^5.2. Resolving Relative References>
 " - `uri' may already be absolute (i.e. has scheme), is then returned
 "   unchanged
 " - `base' should really be absolute! Otherwise the returned Uri will not be
 "   absolute (scheme <undef>). Furthermore `base' should be reasonable (e.g.
 "   have an absolute Path in the case of hierarchical Uri)
 "
-fu! ThlnkUri_abs(uri, base)
+fu! UtlUri_abs(uri, base)
 
-    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=If the scheme component>
-    if ThlnkUri_scheme(a:uri) != '<undef>'
-"	echo 'DBG ThlnkUri_abs: scheme defined, uri already absolute' 
+    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#If the scheme component>
+    if UtlUri_scheme(a:uri) != '<undef>'
 	return a:uri
     endif
 
-    let scheme = ThlnkUri_scheme(a:base)
+    let scheme = UtlUri_scheme(a:base)
 
     " query, fragment never inherited from base, wether defined or not,
-    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=not inherited from the base URI>
-    let query = ThlnkUri_query(a:uri)
-    let fragment = ThlnkUri_fragment(a:uri)
+    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#not inherited from the base URI>
+    let query = UtlUri_query(a:uri)
+    let fragment = UtlUri_fragment(a:uri)
 
-    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=If the authority component is defined>
-    let authority = ThlnkUri_authority(a:uri)
+    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#If the authority component is defined>
+    let authority = UtlUri_authority(a:uri)
     if authority != '<undef>'
-"	echo 'DBG ThlnkUri_abs: authority defined. quit' 
-	return ThlnkUri_build(scheme, authority, ThlnkUri_path(a:uri), query, fragment)
+	return UtlUri_build(scheme, authority, UtlUri_path(a:uri), query, fragment)
     endif
 
-    let authority = ThlnkUri_authority(a:base)
+    let authority = UtlUri_authority(a:base)
 
-    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=If the path component begins>
-    let path = ThlnkUri_path(a:uri)
+    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#If the path component begins>
+    let path = UtlUri_path(a:uri)
     if path[0] == '/'
-"	echo 'DBG ThlnkUri_abs: absolute path. quit' 
-	return ThlnkUri_build(scheme, authority, path, query, fragment)
+	return UtlUri_build(scheme, authority, path, query, fragment)
     endif
 	
-    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=needs to be merged>
-"    echo 'DBG ThlnkUri_abs: path to be merged'
+    " see <URL:http://www.ietf.org/rfc/rfc2396.txt#needs to be merged>
 
     "	    step a)
-    let new_path = substitute( ThlnkUri_path(a:base), '[^/]*$', '', '')
-"    echo 'DBG ThlnkUri_abs: new_path=|' . new_path . '|'
+    let new_path = substitute( UtlUri_path(a:base), '[^/]*$', '', '')
     "	    step b)
     let new_path = new_path . path
-"    echo 'DBG ThlnkUri_abs: new_path=|' . new_path . '|'
 
-    "upd implement the missing steps (purge a/b/../c/ into a/c/ etc)
+    " Possible Enhancement: implement the missing steps (purge a/b/../c/ into
+    " a/c/ etc)
 
-    return ThlnkUri_build(scheme, authority, new_path, query, fragment)
+    return UtlUri_build(scheme, authority, new_path, query, fragment)
 
 
 endfu
@@ -254,16 +247,15 @@ endfu
 " 
 " - typically string is an uri component (path or fragment)
 "
-" (see <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=2. URI Characters and Escape Sequences>)
+" (see <URL:http://www.ietf.org/rfc/rfc2396.txt#2. URI Characters and Escape Sequences>)
 "
-fu! ThlnkUri_unescape(esc)
+fu! UtlUri_unescape(esc)
     " perl: $str =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg
     let esc = a:esc
     let unesc = ''
     while 1
 	let ibeg = match(esc, '%[0-9A-Fa-f]\{2}')
 	if ibeg == -1
-"	    echo "DBG unescaped=`". unesc . esc . "'"
 	    return unesc . esc
 	endif
 	let chr = nr2char( "0x". esc[ibeg+1] . esc[ibeg+2] )

@@ -1,0 +1,323 @@
+*utl_ref.txt* Plugin for executing URLs from text files (reference manual)
+For Vim version 6, Version: utl-2.0, $Revision: 1.11 $
+
+		    Utl.vim Reference Manual
+
+			 By Stefan Bittner
+			stb@bf-consulting.de
+
+	Contents:
+
+		1. The utl.vim reference........|utl-reference-manual|
+		2. Brief refresher URL and URI..|utl-uriprim|
+
+NOTE: At the moment (utl.vim-2.0) the reference is not complete.
+
+References:
+- see |utlusr.txt| for the user manual
+
+==============================================================================
+1. The utl.vim reference			    *utl-reference-manual*
+
+1.1 Fragment expression syntax				*utl-fragexpr*
+
+Utl.vim supports the following fragment expressions:
+
+#tn=MySearchText      "Text Next Search"		*utl-#tn*
+#MySearchText	      Addresses that position in the target file, which is
+		      defined by searching the string "MySearchText" in
+		      forward direction.
+		      The search is done relative, i.e. beginning from the
+		      actual position. This typically is the start of the
+		      document.  MySearchText can contain White Space.  The
+		      searching is done in a fuzzy manner (see
+		      <URL:../plugin/utl.vim#r=fuzzy>).  The basic idea of the
+		      fuzzy search is that the semantic sequence of words
+		      should be sufficient, in order to minimize broken
+		      fragments.
+
+#tp=MySearchText      "Text Previous Search"		    *utl-#tp*
+		      like #tn but search backwards.
+
+#line=MyLineNumber    e.g. line=23, line=-8.		    *utl-#line*
+		      References the given line number in the text.
+		      The search is done relative, like above.
+
+#r=MyIdentifier	      ID-Reference.			    *utl-#idref*
+		      References the defined `anchor' id=... in the target
+		      document. See also |utl-fragmedtyp|. MyIdRef should be
+		      an identifier (not a sequence of words). Note that
+		      #r=foo and #r=foobar are distinguished whereas
+		      #tn=foo will perhaps find the wrong position if there
+		      also is as string foobar in the target document.
+
+
+
+1.2. Dependency of fragment interpretation from media type  *utl-fragmedtyp*
+
+According to RFC2396, the interpretation of fragments determined by
+the type of the target document (see:
+<URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=is dependent on the media type )
+
+For media types other than "text/*" fragments will be ignored (e.g. for
+"image/*")
+
+For "text/*" utl.vim makes a difference between "text/html" and all other
+"text/*" subtypes.  But the interpretation of tn=, tp=, line= is the same for
+_all_ text/* subtypes.  Just the IdRef interpretation is different:
+
+text/html   IdRef interpreted as a HTML-reference (i.e. NAME="myRef")
+
+text/*	    IdRef interpreted as "txt-reference" (i.e. id=myRef)
+
+
+
+1.3 Utl.vim internals					*utl-internals*
+
+1.3.1 Definition of LocalPath
+
+Utl.vim internally has a notion "LocalPath".  LocalPath is an absolute path
+of the local file system.  A real local file (or directory) with that name
+exists. A pure buffer is not possible (at the moment). Utl's is simpler due
+to this restriction.  For localPath a resource mapping exists.
+
+
+1.4. Mappings and Commands		     *utl-mappings* *utl-commands*
+
+Note: The mappings below depend on the |mapleader| variable. This means,
+instead of \gu it might be ,gu or whatever.
+
+1.4.1 `Goto URL under cursor' mappings			*utl-gourlundercurs*
+
+The following mappings are available to execute the URL under the cursor:
+
+\ge, \gE, \gS, \gu			      *utl-ge* *utl-gS* *utl-gu*
+	Goto URL under cursor. Open the target read/write.
+	\ge replaces the current window with the target (:edit)
+	\gE opens the target in a split window (:split).
+	\gS opens the target in a vertical split window (:vsplit)
+	\gu is the same as \ge. It is provided for easy mnemonics: gu = Go Url
+	    It's the only command you really have to know in order to use
+	    utl.vim!
+
+\gv, \gV							    *utl-gv*
+	Goto URL under cursor. Open the target read only
+	\gv replaces the current window with the target (:view).
+	\gV opens the target in a split window (:sview).
+
+\gr								    *utl-gr*
+	Read the URL under cursor into the current buffer at the current
+	position (:read)
+
+
+1.4.2 `Goto visual URL' mappings			      *utl-gourlvis*
+
+Same as the above mappings, but the but the highlighted text is used as the
+name of the URL. The visual mappings are useful when you have a text where the
+URLs are not embedded. Example: "See http://vim.sf.net for useful Vim plugins"
+
+					*utl-v_ge* *utl-v_gs* *utl-v_gu*
+{Visual}\ge, {Visual}\gE, {Visual}\gS {Visual}\gu
+
+{Visual}\gv, {Visual}\gV					  *utl-v_gv*
+
+{Visual}\gr							  *utl-v_gr*
+
+
+1.4.3. `Goto URL by command'				      *utl-gourlcmd*
+
+Type in an URL manually.
+
+:Gu {URL}							   *utl-:gu*
+	Goto the typed URL.
+	The difference between \gu and :Gu is like in an web browser: typing
+	an URL versus clicking an URL in the displayed text. But there is one
+	important difference though. :Gu is executed in the context of the
+	current buffer, i.e. :Gu myurl is the same as clicking \gu on
+	<URL:myurl> in the text of the current buffer. That means that
+	relative URLs are possible! So :Gu can be used for relative editing.
+	See |utl-tipsguusage| or |utl-tuttypeurl| for examples of usage.
+
+
+1.6.4. Other mappings and commands
+
+\gs								    *utl-gs*
+	Show the base URL that is associated with the current buffer in the
+	status line, if any.
+	Else shows the text `no associated URL'. That means, that the current
+	buffer was not invoked as a link target (i.e. was not invoked through
+	a utl.vim `Goto URL' command like \gu, :Gu etc).
+	\gs just does a lookup utl's cache (see |utl-gc|).
+
+	Tip:
+	If, in the `no associated URL' case, you like to know what the base
+	URL is, you can first issue the command
+	    :exe ':Gu ' . expand('%')
+	to "urlify" the current buffer (see |utl-tutfileisdef|); a
+	subsequent \gs then shows the associated URL. This can be useful while
+	learning utl.vim. The associated URL is always an absolute URL. And
+	it is the base URL that would be taken when a link, containing a
+	relative URL, would be executed out of the current buffer, e.g. a
+	<URL:someUrl> is executed.
+
+\gc								    *utl-gc*
+	Shows utl.vim's internal cache map in a separate window.
+	Useful mainly to see what's going on. See |utl-tutcachemap| for
+	more information.
+
+
+==============================================================================
+2. Brief refresher on URL and URI			*utl-uriprim*
+
+This chapter might be worth reading if you are thinking about designing your
+own protocols. If you are going to extend Utl, it's source code will be easier
+understandable if you know URLs better. But it is also intended for the
+interested user to acquire a more thorough understanding of URLs and Utl in
+general.
+
+Uniform Resource Identifiers are specified in RFC 2396, see <URL:http://www.
+ietf.org/rfc/rfc2396.txt>.
+
+URI vs. URL						*utl-uri-uriurl*
+-----------
+#uu geht so nicht mehr!
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=^1.2.  )
+
+URL - Uniform Resource Locators are a subset of URI: A URL is a URI. As the
+name says, a URL identifies a resource by its (network) location. Other ways
+to identify a resource are suggested with "Uniform Resource Names" (URN).
+URI = URL | URN.
+
+But for the purpose of utl.vim you can ignore the difference between URIs and
+URLs.
+
+The three letters U, R, I				*utl-uri-3letters*
+-------------------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=^1.1 Overview 
+  The following material is directly taken from there )
+
+URI are characterized by the following definitions:
+
+Uniform
+   Uniformity provides several benefits: it allows different types of resource
+   identifiers to be used in the same context, even when the mechanisms used
+   to access those resources may differ; it allows uniform semantic
+   interpretation of common syntactic conventions across different types of
+   resource identifiers; it allows introduction of new types of resource
+   identifiers without interfering with the way that existing identifiers are
+   used; and, it allows the identifiers to be reused in many different
+   contexts, thus permitting new applications or protocols to leverage a
+   pre-existing, large, and widely-used set of resource identifiers.
+
+Resource
+   A resource can be anything that has identity.  Familiar examples include an
+   electronic document, an image, a service (e.g., "today's weather report for
+   Los Angeles"), and a collection of other resources.  Not all resources are
+   network "retrievable"; e.g., human beings, corporations, and bound books in
+   a library can also be considered resources.  The resource is the conceptual
+   mapping to an entity or set of entities, not necessarily the entity which
+   corresponds to that mapping at any particular instance in time.  Thus, a
+   resource can remain constant even when its content---the entities to which
+   it currently corresponds---changes over time, provided that the conceptual
+   mapping is not changed in the process.
+
+Identifier
+   An identifier is an object that can act as a reference to something that
+   has identity.  In the case of URI, the object is a sequence of characters
+   with a restricted syntax.
+
+Having identified a resource, a system may perform a variety of operations on
+the resource, as might be characterized by such words as `access', `update',
+`replace', or `find attributes'.
+
+
+URI Syntactic Components				*utl-uri-syntcomp*
+------------------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=^3. URI Syntactic  )
+
+An URI goes like this:
+
+    <scheme>:<scheme-specific-part>
+
+That means, that the thing behind the colon is specific to the scheme!
+The scheme-specific-part is also known as the `opaque' component.
+But many schemes have a hierarchical structure, which is also defined by
+RFC 2396. The syntax for hierarchical URI is:
+
+    <scheme>://<authority><path>?<query>
+
+The `authority' often is a host name (but can also be, say, a windows drive).
+An example for a non hierarchical URI is the vimhelp scheme, e.g. `vimhelp:help'.
+Another example is the mailto scheme: mailto:stb@bf-consulting.de
+
+Each of the above components may be missing, and it's still a valid URI.
+
+
+URI References						*utl-uri-refs*
+--------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=^4. URI References )
+
+    URI reference = URI # fragment
+
+The fragment is not part of an URI! But it often appears in conjunction with
+it, so RFC2396 deals with the fragments also. Utl.vim doesn't care much
+making the correct distinction. Most often it is clear from the context.
+
+
+Fragment Identifiers					*utl-uri-fragids*
+--------------------
+( References: <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=^4.1. Fragment  )
+
+It is very important to realize, that fragment interpretation only depends on
+the media type of the "retrieved" document. Not from, say, the scheme, i.e.
+the protocol.
+
+This property is utilized by utl.vim since it defines fragment syntax for
+generic, unstructured text (i.e. tn= line=).
+
+
+Absolute and relative URI				*utl-uri-relabs*
+-------------------------
+( Reference:
+  <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=Relative URI references are distinguished  )
+
+URI come in two forms: relative and absolute. The rule to distinguish between
+the two is very simple:
+
+    Scheme component exists = It's an absolute URI
+
+Normally, a relative URI is transformed into an absolute URI by the
+application context in which the relative URI appears. Context = base URL
+
+
+Escaping forbidden characters				*utl-uri-forbchars*
+-----------------------------
+#uu stimmt nicht mehr so
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt> #tn=^2. URI Char )
+
+Only a limited set of ascii characters are allowed in an URI.  Some other
+characters, like < > ? / : for example, are reserved characters, in the sense
+that they have a special meaning for the URI itself.
+
+If you need to use a forbidden or reserved character, you have to escape it
+by its hex value. Examples:
+
+    `>'		-> `%3e'
+    ` ' (blank) -> `%20'
+
+Hint: Just use Vim's :asc command <URL:vimhelp:asc> to find out the hex value of
+a character!
+
+If in doubt if a character is forbidden you can also escape allowed
+characters. Example: <URL:vimhelp:%61%73%63>
+
+
+
+==============================================================================
+FOOTNOTES
+
+-----id=foot1
+Thanks for trying out utl.vim :-)
+
+
+ vim:tw=78:sw=4:sts=4:ts=8:ft=help:norl:
