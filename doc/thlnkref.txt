@@ -1,0 +1,224 @@
+*thlnkref.txt*
+thlnk.vim - Plugin implementing URL based hyperlinking for plain text
+For Vim version 6, Version: thlnk-1.2, Last Change: 14.06.02/STB
+
+		    Thlnk.vim Reference Manual
+
+			 By Stefan Bittner
+			stb@bf-consulting.de
+
+	Contents:
+
+		1. The thlnk.vim reference......|thlnk-reference-manual|
+
+NOTE: At the moment (thlnk.vim-1.2) the reference is far from complete.
+      See the user manual instead.
+
+References:
+- see |thlnkusr.txt| for the user manual
+
+==============================================================================
+1. The thlnk.vim reference			    *thlnk-reference-manual*
+
+1.1 Fragment expression syntax				*thlnk-fragexpr*
+
+Thlnk.vim supports the following fragment expressions:
+
+#tn=MySearchText      "Text Next Search"
+		      Addresses that position in the target file, which is
+		      defined by searching the string "MySearchText" in
+		      forward direction.
+		      The search is done relative, i.e. beginning from the
+		      actual position. This typically is the start of the
+		      document.  MySearchText can contain White Space.  The
+		      searching is done in a fuzzy manner (see
+		      <URL:vim_x:thlnk_vim#fuzzy>).  The basic idea of the
+		      fuzzy search is that the semantic sequence of words
+		      should be sufficient, in order to minimize broken
+		      fragments.
+
+#tp=MySearchText      "Text Previous Search"
+		      like #tn but search backwards.
+
+#line=MyLineNumber    e.g. line=23, line=-8.
+		      References the given line number in the text.
+		      The search is done relative, like above.
+
+#MyIdRef	      ID-Reference. References the defined `anchor' in the
+		      target document. See also |thlnk-fragmedtyp|.
+		      MyIdRef should be an identifier (not a sequence of
+		      words)
+
+
+
+1.2. Dependency of fragment interpretation from media type  *thlnk-fragmedtyp*
+
+According to RFC2396, the interpretation of fragments determined by
+the type of the target document (see:
+<URL:http://www.ietf.org/rfc/rfc2396.txt#tn=is dependent on the media type>)
+
+For media types other than "text/*" fragments will be ignored (e.g. for
+"image/*")
+
+For "text/*" thlnk.vim makes a difference between "text/html" and all other
+"text/*" subtypes.  But the interpretation of tn=, tp=, line= is the same for
+_all_ text/* subtypes.  Just the IdRef interpretation is different:
+
+text/html   IdRef interpreted as a HTML-reference (i.e. NAME="myRef")
+
+text/*	    IdRef interpreted as "txt-reference" (i.e. id=myRef)
+
+
+1.3 Local Resource Queries				*thlnk-filequery*
+
+Thlnk introduces local resource queries. This is somewhat similar to HTTP's
+CGI-Interface. Examples:
+
+    <URL:/usr/stb/Mail/search?20001025234042.A29199>
+	Might search the mail folder for an email with a given `Message-Id'.
+	The program "search" might be a perl script.
+
+    <URL:file:?dir%3e>
+	(Windows) Displays directory listing in a Vim window
+
+When Thlnk encounters a query (within the "file:" scheme), it interpretes
+the resource (i.e. the path) as executable: It makes a shell-escape
+from within Vim. The query expression are passed as arguments.
+See <URL:vim_x:thlnkscm_vim#filequery>.
+
+The interface is like when you type manually in Vim:
+
+    :! <path> <query> <outfile>
+
+The outfile is a Thlnk-generated temporary file name (a cache file),
+path and query are taken from the URL. You can see what happens in Vim, since
+the shell escape is echoed.
+
+There are some standard fragment syntaxes. thlnk.vim-1.2 only supports the
+"keywords form":
+
+    ?a+b+c
+
+Which means, that the plus'es are substituted by Blanks and `a b c'
+act as three arguments for your program. (You might look directly at
+the source what happens: <URL:vim_x:thlnkscm_vim#query_keywords>.
+
+Due to the given interface you need to include the redirection character '>'
+into the query. Since a '>' is not a valid uri character, it needs to be
+escaped as uri hex escape: %3e (see example above <URL:#tp=dir%25%33%65>)
+
+
+1.4 Thlnk.vim internals					*thlnk-internals*
+
+1.4.1 Definition of LocalPath
+
+Thlnk.vim internally has a notion "LocalPath".  LocalPath is an absolute path
+of the local file system.  A real local file (or directory) with that name
+exists. A pure buffer is not possible (at the moment). Thlnk's is simpler due
+to this restriction.  For localPath a resource mapping exists.
+
+
+1.5. Enabling http and ftp URLs				*thlnk-wget*
+
+If you don't have the `wget' utility installed on your computer, you can't
+execute http URLs like <URL:http://www.vim.org>.
+
+The wget Utility is available from:
+
+    http://www.gnu.org/software/wget/wget.html
+
+There is also a reference for Windows binaries on this page.  For the
+impatient: <URL:http://ftp.sunsite.dk/projects/wget/windows/wget-1.8.1b.zip>.
+
+Note: Executing http URLs, thlnk.vim relies on wget exactly in the same way as
+the standard plugin netrw.vim does (see |netrw| and |23.2|). When netrw works
+for you with http, then thlnk.vim will also do.
+
+
+1.6. Mappings and Commands		     *thlnk-mappings* *thlnk-commands*
+
+Note: The mappings below depend on the |mapleader| variable. This means,
+instead of \gu it might be ,gu or whatever.
+
+1.6.1 `Goto URL under cursor' mappings			*thlnk-gourlundercurs*
+
+For an URL to be detected `under cursor', it has to be embedded in between
+`<URL:' and '>', e.g. <URL:myurl>. In HTML files the HTML's `native embedding'
+<A HREF...> is supported (see |thlnk-tutmeddep|).
+
+\ge, \gE, \gu						 *thlnk-ge* *thlnk-gu*
+	Goto URL under cursor. Open the target read/write.
+	\ge replaces the current window with the target (:edit)
+	\gE opens the target in a split window (:split).
+	\gu is the same as \ge. It is provided for easy mnemonics: gu = Go Url
+	    It's the only command you really have to know in order to use
+	    thlnk.vim!
+
+\gv, \gV							    *thlnk-gv*
+	Goto URL under cursor. Open the target read only
+	\gv replaces the current window with the target (:view).
+	\gV opens the target in a split window (:sview).
+
+\gr								    *thlnk-gr*
+	Read the URL under cursor into the current buffer at the current
+	position (:read)
+
+
+1.6.2 `Goto visual URL' mappings			      *thlnk-gourlvis*
+
+Same as the above mappings, but the but the highlighted text is used as the
+name of the URL. The visual mappings are useful when you have a text where the
+URLs are not embedded. Example: "See http://vim.sf.net for useful Vim plugins"
+
+{Visual}\ge, {Visual}\gE, {Visual}\gu		     *thlnk-v_ge* *thlnk-v_gu*
+
+{Visual}\gv, {Visual}\gV					  *thlnk-v_gv*
+
+{Visual}\gr							  *thlnk-v_gr*
+
+
+1.6.3. `Goto URL by command'				      *thlnk-gourlcmd*
+
+Type in an URL manually.
+
+:Gu {URL}							   *thlnk-:gu*
+	Goto the typed URL.
+	The difference between \gu and :Gu is like in an web browser: typing
+	an URL versus clicking an URL in the displayed text. But there is one
+	important difference though. :Gu is executed in the context of the
+	current buffer, i.e. :Gu myurl is the same as clicking \gu on
+	<URL:myurl> in the text of the current buffer. That means that
+	relative URLs are possible! So :Gu can be used for relative editing.
+	See |thlnk-tipsguusage| or |thlnk-tuttypeurl| for examples of usage.
+
+
+1.6.4. Other mappings and commands
+
+\gs								    *thlnk-gs*
+	Show the URL associated with the current buffer in the status line,
+	if any. Shows `URL=' (empty) when no URL associated.
+	An associated URL exists when the buffer was invoked by a thlnk.vim
+	`Goto URL' command, e.g. \ge, :Gu etc.
+
+\gc								    *thlnk-gc*
+	Shows thlnk.vim's internal cache map in a separate window.
+	Useful mainly to see what's going on. See |thlnk-tutcachemap| for
+	more information
+
+
+==============================================================================
+FOOTNOTES
+
+-----
+Thanks for trying out thlnk.vim :-)
+
+-----
+								    id=voici
+"Voici les perles les bijoux" (one line from the song "Aicha" by Khaled).
+To see that line in the context of the whole song execute:
+    <URL:http://www.chez.com/kolymbia/aicha.html#tn=Voici>
+Only works when you have the `wget' tool installed on you computer,
+see |thlnk-wget|.
+
+
+ vim:tw=78:sw=4:sts=4:ts=8:ft=help:norl:

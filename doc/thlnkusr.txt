@@ -1,0 +1,1640 @@
+*thlnkusr.txt*	*thlnk* *thlnk-plugin*
+thlnk.vim - Plugin implementing URL based hyperlinking for plain text
+For Vim version 6, Version: thlnk-1.2, Last Change: 14.06.02/STB
+
+
+		       Thlnk.vim User Manual
+
+			 By Stefan Bittner
+			stb@bf-consulting.de
+
+	Contents:
+
+		1. Intro........................|thlnk-intro|
+		2. Getting started..............|thlnk-getstart|
+	        3. A tutorial...................|thlnk-tutorial|
+	        4. Tips and common pitfails.....|thlnk-tipspitfails|
+		5. A source code example........|thlnk-sourceex|
+		6. Gallery of examples..........|thlnk-gallery|
+		7. Brief refresher URL and URI..|thlnk-uriprim|
+		8. Possible future development..|thlnk-possfutdev|
+		9. Contributions................|thlnk-contrib|
+	       10. Known bugs and todo's........|thlnk-bugstodos|
+
+
+References:
+See |thlnkref.txt| for some reference material.
+See <URL:http://www.bf-consulting.de/thlnk/vim> for the thlnk.vim homepage.
+See |thlnk-wget| about enabling thlnk.vim to execute remote URLs.
+See |thlnk-os_mac| when you use Vim6 on the Mac.
+
+I'd Like to Hear from You---
+Any comments, bug reports and suggestions are welcome!
+... As well as hints concerning crimes against american orthography :-|
+Furthermore I'm planning to add an item "how people use plain text URLs"
+to the thlnk.vim docs in the next release. Perhaps you like to contribute!
+Happy linking,
+			      Stefan Bittner <URL:mailto:stb@bf-consulting.de>
+
+==============================================================================
+1. Intro           					*thlnk-intro*
+
+Welcome to thlnk.vim!
+
+- The name of the game: Thlnk stands for "plain text hyperlinking".
+  The desired pronunciation is "Thlink".
+
+- It brings the benefits of URL-based hyperlinking to the realm of plain
+  text|thlnk-footnote-plaintext|.
+
+- It is the implementation of a general approach for better and more powerful
+  text editing and browsing. Its about text culture. That's why Thlnk also is
+  a project (see <URL:http://www.bf-consulting.de/thlnk/vim/project.html>).
+
+- It is a handy utility for you right away.
+
+- It changes your live: It leads you to the exciting experience, what URLs can
+  be, when they are set free from their "markup prison". You will see, that
+  they can very well live apart from Web, HTML and XML.
+
+What is it good for?
+--------------------
+- Turn references like "see below" into executable hotlinks ...read more
+  |thlnk-footnote-seebelow|.
+
+- It's a very handy utility for programmers. Make references to man pages,
+  perldoc, info, figures, pictures, docs directly and easy accessible from
+  your source code.
+
+- Easily navigate in collections of related text files.
+
+- Better commenting of program source code through cross references.
+  Increase your code quality! ...see an example|thlnk-sourceex|.
+
+- Use thlnk.vim for project and document management ...read more
+  |thlnk-footnote-docmanag|
+
+- Do HTML-editing and -browsing using Vim ...read more|thlnk-footnote-htmledit|.
+  And call your the browser on an URL |thlnk-tipsstartbro|.
+
+- Manage your email ...read more|thlnk-footnote-handlemail|,
+  and much more ...|thlnk-footnote-muchmore|.
+
+
+Got hooked? Well, then just dive into the live examples:
+
+
+==============================================================================
+2. Getting started					*thlnk-getstart*
+
+Thlnk.vim's basic mapping is \gu "Go Url" |thlnk-gu|. That's all you need!
+
+Live Examples now!!!
+
+1. Position the cursor on the next line:
+	<URL:#here>
+   Then hit `\gu'. This should take you ...
+	id=here.
+
+   You just executed your first link!
+   Just like in HTML, #xxx refers to an anchor. But instead of an NAME=xxx
+   anchor, in plain text we have an id=xxx anchor.
+
+2. Hitting `\gu' on <URL:#tn=some%20text> takes you to ... some text.
+
+   The %20 is the hex value of a blank character and is sometimes needed in
+   URLs. The special syntax `tn=' just means that the target of the link is
+   defined by searching the denoted string (some text) in forward direction.
+
+3. Hitting `\gu' on <URL:thlnkref.txt> takes you to the file thlnkref.txt.
+
+   Please come back here again after having executed the link!
+
+4. Hitting `\gu' on <URL:thlnkref.txt#tn=^thanks for> takes you to a
+   specific position in the file thlnkref.txt. This example can be seen as
+   the combination of the previous examples 2. and 3 : URL + #... suffix
+
+   The #... suffix is called a fragment expression in URL lingo.
+
+
+If you feel its now time for a "hello world" test, just go ahead and write
+your own links. There is no meta data and no tags file needed. Its nothing
+but plain text.
+
+Before you seriously start using thlnk.vim it is strongly recommended, that
+you read the chapter "Tips and Common Pitfails" |thlnk-tipspitfails| !
+
+Next I would like to offer you a tutorial in the next chapter:
+
+
+==============================================================================
+3. A tutorial            				*thlnk-tutorial*
+
+You should already have read the above chapter|thlnk-getstart|.
+
+Basic Usage						*thlnk-tutbasusage*
+-----------
+You already know how to follow the links by hitting \gu when a link is under
+the cursor.
+
+The following link takes you to another file:
+
+    <URL:thlnkref.txt>
+
+Try this now! ... No, Wait! To come back here again, just use the regular
+vim command CTRL-O. That's the BACK-Button in the "vim browser".
+Now do it! 
+
+Hope you are back again.
+
+The next link has the same URL, but it is extended by a fragment. That way a
+specific position in the file can be jumped to. Execute the link:
+
+    <URL:thlnkref.txt#voici>
+
+now - and come back again with CTRL-O.  you might have noticed, that thlnk.vim
+took you to the position `id=filequery'. This is similar to HTML.
+
+The next link is still the same URL, but the fragment is different:
+
+    <URL:thlnkref.txt#tn=Local Resource Queries>
+
+Execute it now and come back again! It took you to same position than the
+previous link, but by other means. The fragment `tn=Local Resource Queries'
+means, that the file thlnkref.txt is searched (tn stands for "text next") for
+the string `Local Resource Queries', beginning from the top of the file.
+
+
+Associated Base URL					*thlnk-tutassocbase*
+-------------------
+Now once again execute the link:
+
+    <URL:thlnkref.txt>
+
+and when you ARE in the other file, thlnkref.txt, then type the thlnk.vim
+command |thlnk-gs|
+
+    \gs
+
+that shows you the associated base URL in Vim's message line.
+Which looks something like:
+
+    URL= file:///path/to/.vim/doc/thlnkref.txt
+
+This is the base URL, denoting the context for resolving relative URLs.
+That's like in HTML.  Without relative URLs, URLs would loose much of their
+power.  For example, relative URLs make a set of related documents portable.
+
+If you need a refresher about URL theory you might want to read
+|thlnk-uriprim| now.  You will learn about relative URLs, base URLs, URL
+versus URI, URI references, and what scheme, authority, path, query, fragment
+mean.
+
+Linking related local documents together: that's where thlnk.vim comes from,
+that's the origin of the thlnk.vim history.
+
+
+Cache Mapping						*thlnk-tutcachemap*
+-------------
+Type now the thlnk.vim command |thlnk-gc|
+
+    \gc
+
+Thlnk.vim shows you it's internal cache-mapping: The mapping between local
+files and their URL.	That grows up more and more when you continue to
+follow links to different URLs.  At the moment \gc is mainly useful to see
+whats going on when learning thlnk.vim. The cache map is always looked up when
+thlnk.vim needs a base URL.
+
+When \gs shows you just an empty `URL= ', this means that the buffer was not
+invoked by thlnk.vim, e.g. was invoked by a user command like :e xyz.
+
+When working with local files, the URL may seem quite academic. But with
+remote resources this changes.  Also, the special protocol `vim_h:'
+|thlnk-ex_vim_h| can serve as an example for the for a non trivial mapping
+between local file and URL name. Try:
+
+    <URL:vim_h:ctrl-o>
+
+and when the vim help shows up, type \gc .  The local path (i.e. the file
+where the help is in) might look something like
+`/usr/local/share/vim/vim61/doc/motion.txt' whereas the URL was
+`vim_h:ctrl-o'.
+
+
+Typing an URL						*thlnk-tuttypeurl*
+-------------
+In a web browser there are two ways to go to a page:
+
+1. You follow a hyperlink from the page you are in.
+2. You type an URL yourself.
+
+Possibility 1 corresponds to \gu in thlnk.vim. Possibility 2 corresponds to a
+thlnk.vim command :Gu |thlnk-:gu|:
+
+    :Gu thlnkref.txt
+
+You can use the :Gu command for editing another file which is in the same
+directory as the current file. Example:
+
+    gvim /really/an/annoying/long/path/to/src/main.c
+    :Gu option.c
+
+I myself use :Gu for this purpose a lot (even with the drawback that there is
+no file name completion yet). Relative directories also work of course:
+
+    gvim /really/an/annoying/long/path/to/src/main.c
+    :Gu ../runtime/vimrc_example.vim
+
+|thlnk-tipsguusage| also discusses the :Gu command.
+
+
+The `file:' protocol is the default			*thlnk-tutfileisdef*
+-----------------------------------
+When \gs shows `URL= ' (empty value) you nevertheless can execute relative
+URLs. Given a relative URL, say thlnkref.txt, thlnk.vim just assumes the
+`file:' protocol, i.e. file:///path/to/currentBuffer.
+
+This behaviour normally gets the thing started: you are in a normal Vim
+session and encounter a link somewhere. Just type \gu to follow the link.
+
+(The behaviour to "urlify" the current resource is usual for systems that
+support both, URL oriented and file system oriented resources. For example
+Linux/KDE's file manager, KFM.  Netscape also lets you enter something like
+`/etc/hosts' as a heuristic.)
+
+
+Other Commands to execute a Link			*thlnk-tutothercmds*
+--------------------------------
+Until now we have used \gu to execute a link. That's the most important one.
+Thlnk.vim defines several other command. \gu corresponds to Vim's :edit. The
+other commands correspond to :view :sview etc. See |thlnk-commands| for
+the list of mappings and commands.
+
+Visual-commands.
+The visual commands |thlnk-gourlvis| are useful when there is no embedding
+`<URL: >'. Example: 
+
+    http://www.vim.org
+
+Highlight the URL (see |visual-use| if you don't know how) and execute
+\gu then.
+
+
+Generic fragment syntax					*thlnk-tutgensynt*
+-----------------------
+thlnk.vim defines the following fragment expressions
+
+    #tn=some text
+    #tp=some text
+    #line=123
+    #IdRef
+
+See |thlnk-fragexpr| for an explanation. Most often tn and IdRef are used.
+
+Using IdRef expressions is only possible when the target document defines that
+Id. You know that from HTML. The other expressions allow addressing without
+any precautions in the target document.  That way you can link to fragments of
+documents that you are not allowed to change or that you don't want to change.
+Example:
+
+    <URL:http://www.vim.org#tn=and the best of all>
+
+(You can only execute this link when you have `wget' installed |thlnk-wget|.)
+
+
+							*thlnk-tutmeddep*
+Embedding and fragment interpretation depend on the media-type
+--------------------------------------------------------------
+As you already know, Thlnk introduces the embedding `<URL:myUrl>' for plain
+text files. For html-text it makes sense to support HTML's embedding, i.e.
+something like `<A HREF="myUrl">'. This means: When you are editing a
+HTML-file and execute \gu to follow a link, thlnk.vim expects the pattern
+`<A HREF...>' under the cursor.
+
+The URL embedding syntax relates to the media type of the source of the link.
+The fragment expression syntax relates to the media type of the target of the
+link. The semantics of the fragment expression depends on the media-type.
+
+When the target is a HTML file, with an IdRef expression like `#myFrag' then
+Thlnk finds the position `<A NAME="myFrag">' (it will not parse the HTML-File
+though, it merely searches, but in practice it functions as exepected).  When
+the target is any other file type (thlnk.vim only distinguishs html from all
+others) then Thlnk finds the position `id=myFrag' (case never matters).
+
+So you can really use Thlnk as a HTML-Source-Browser! That's useful
+especially for editing and browsing you web site "under construction"
+
+The other fragment expressions like line=, tn= do not depend on the file
+type (= media-type) in thlnk.vim.
+
+
+Supported schemes					*thlnk-tutsuppscms*
+-----------------
+Currently thlnk.vim supports the following protocols:
+
+    file:	# protocol for accessing local files.
+		# - When machine is given `file:' works like `ftp:'
+		# - MS-Windows: supports drives notation <URL:#windrive>
+    vim_h:	# vim specific. For referencing the vim online help.
+    man:	# Unix Man Pages scheme (see <URL:vim_h:Man>)
+    http:	# (when wget is installed)
+    ftp:	# (when wget is installed)
+    rcp:	# (when you have a rcp command)
+    mailto:	# Uses the mutt mailer. Merely serves as a demonstration.
+
+The `file:' scheme should work for everybody. On Windows drives in the
+authority component are supported, e.g.:		(id=windrive)
+
+    file://C:/autoexec.bat".
+    
+The `vim_h:' scheme also should be fine. 
+
+The other schemes you should consider as sample implementations.  `http:',
+`ftp:' depend on having the wget utility installed.
+
+You can easily implement your own schemes or define new ones!
+You just define a vim-function somewhere. Thlnk.vim dynamically
+calls those functions. Have a look at <URL:vim_x:thlnkscm_vim#implscmfunc>.
+
+For displaying images (media type image/xxx), the Unix tool `xv' is called.
+What is appropriate for windows?
+
+NOTE: `http:', `ftp:', `rcp:' should probably be implemented using the
+|netrw|-plugin in an upcoming version of thlnk.vim.
+
+
+==============================================================================
+4. Tips and common pitfails				*thlnk-tipspitfails*
+
+This section has been newly added for thlnk-1.2.  It's the result of the
+feedback I received. Thanks to everybody who contributed! Special thanks to
+"Klaus Horsten" <horsten@gmx.at> and "Patrik Nyman"
+<patrik.nyman@orient.su.se> !
+
+There is a hurdle you have to take in order to use thlnk.vim efficiently.
+You have to understand URLs. When you are a HTML programmer you should not
+have big problems. But there is good news. Almost everything you learn is
+general knowledge you can use elsewhere! Thlnk.vim does nothing at will.
+Everything is straight forward!
+
+
+4.1 When to use URL hyperlinks				*thlnk-whentouse*
+
+Plain text URLs are especially useful in the following cases.
+
+
+Referring directly to a specific position.		*thlnk-whenreferpos*
+
+  By the means of fragment expression #... , URLs offer the possibility to not
+  only link to a target file. You can also link to a specific position within
+  that target file.
+
+  This is achieved by the #identifier fragment expression, which works similar
+  to HTML's <A NAME=identifier> targets. Or it is achieved by the #tn=string
+  and #line=nnn fragments. These are especially designed for use with
+  unstructured text. They allow addressing without the need of editing the
+  target document (which is not possible in HTML).
+
+  I takes some time to get used to work with fragments and to see the benefit
+  of directly referring to a specific target position.
+
+  See |thlnk-sourceex| for an #tn=xxx fragment example.
+
+
+Collection of related files.				*thlnk-whencollrel*
+
+  The hierarchical URL protocols like `file:' are especially powerful for
+  linking inside a collection of related files.
+
+  Source Code trees are a typical example. From the vim6 source code -
+  enhanced with URLs - :
+
+  vim61/
+      README.txt	    "See <URL:runtime/doc/vi_diff.txt> for -----+
+			    differences with Vi."			|
+      src/								|
+	  option.c	    "Adjust the help for the option in		|
+			    <URL:../runtime/doc/options.txt>"  -----+	|
+      runtime/							    |	|
+	  doc/							    |	|
+	      options.txt				<-----------+   |
+	      vi_diff.txt				<---------------+
+
+  Tip:
+  When working under Unix/Linux using OS soft links is a great way to
+  establish a logical view of related directories, so that relative URLs can
+  be used broadly. (Aren't there links under MS Windows now?). Example:
+  Softlink the directory tree containing bug reports with your software
+  distribution tree.
+
+
+Portable, standardized links desired.			*thlnk-whenportli*
+
+  Contrary to Vim's gf command or tags, URL based links are portable! They do
+  not depend on client side settings (Vim options, path settings). Another
+  advantage of URLs is, that they are a widely accepted standard. When you
+  begin to write URLs, say, in source code files of an open source project,
+  co-developers and other people browsing the source won't merely complain
+  about those URLs, even if they don't use a software or an editor which allow
+  to execute those URLs. The URL shows by its content what is meant.
+      Well, the only thing which might irritate them are the newly introduced
+  fragments like #tn=xxx. But these are in full compliance with the URI
+  specifications. Thlnk.vim just implements URI/URL concepts for plain,
+  unstructured text! Thlnk, the project, aims to establish these newly
+  introduced fragments
+  (see <URL:http://www.bf-consulting.de/thlnk/vim/project.html>).
+
+
+Integrating other media types.				*thlnk-whenintmedias*
+
+  URLs allow to nicely integrate other media types with your text files.
+
+  Example 1:
+  This is taken from a computer graphics program I wrote:
+
+  [polygon.c]
+  .
+  .
+  .
+  /*
+   * Intersects two polygons and returns the intersection area as
+   * the resulting polygon.
+   * See <url:../figures/intersect.gif> for an illustration and
+   * for the interpretation of `flag'
+   */
+      Polygon* 
+  intersect_polygons(Polygon* p1, Polygon* p2, int flag)
+  {
+      // 
+  }
+  .
+  .
+  .
+  EOF
+
+  When I hit \gu on my Linux machine, the external helper program `xv' is
+  invoked and the illustration is displayed! You see: programs can be much
+  better documented using URLs. See |thlnk-ex_image| for current restrictions.
+
+
+  Example 2:
+  For Unix users. A very interesting is to reference man pages
+  (thanks for the |man-plugin| in Vim6!) from the source code:
+
+  [myopen.c]
+  .
+  .
+  .
+  /* Opens file "filename".
+   * See <URL:man:open#tn=flags is one of> for possible values of the `flags' 
+   * argument.
+   * The restrictions described under <URL:man:open#tn=^RESTRICTIONS> also
+   * apply to this function.
+   */
+      int
+  myopen(char* filename, int flags)
+  {
+      //
+      open(filename, flags, mode);
+      //
+  }
+  .
+  .
+  .
+  EOF
+
+
+You might also see <URL:http://www.bf-consulting.de/thlnk/vim/compare.html>
+for a comparison of URL hyperlinking with other Vim hypertext features such
+as tags or the gf command.
+
+
+4.2 Writing correct URLs				*thlnk-writeurls*
+
+As already mentioned, understanding URLs is essential for using thlnk.vim
+as an author. (Using thlnk.vim to execute URLs requires no understanding;
+you just hit \gu when you encounter a link. That's the big difference
+between authoring/editing/writing on one side and reading/browsing/viewing
+on the other side. This difference one often fails to notice.)
+
+Have you already read my URI primer |thlnk-uriprim|? Strongly recommended!
+
+OK, enough moralized now. Now some rules and hints:
+
+- Always use forward slashes!				*thlnk-usefwslashes*
+
+  Even on MS Windows don't write:
+
+    <URL:file:D:\htdocs\corephp\kalender\WebCalendar\index.php> # Bad
+
+  Better write:
+
+    <URL:file://D:/htdocs/corephp/kalender/WebCalendar/index.php> # Good
+
+  Note, that the windows drive appears where you normally expect a machine
+  name. That is according to URI specifications. Try it out from within your
+  web browser!
+
+							*thlnk-userels*
+- Use relative URLs instead of absolute URLs whenever possible
+  Use:
+
+    <URL:sub_dir/foo.txt> or
+
+  instead of:
+
+    <URL:file:/full/path/to/sub_dir/foo.txt>
+
+  Other example:
+
+    <URL:../sibbling_dir/foo.txt>
+
+  Normally there is no need for an explicit `file:' protocol!
+
+
+- How relative URLs are combined			*thlnk-howrelscombine*
+
+  Say you have a file foo.txt which lives in the directory /full/path/to.
+  Thus the full pathname of foo.txt is:
+
+    /full/path/to/foo.txt
+
+  Further assume foo.txt contains an URL:
+
+    [foo.txt]
+    .
+    .
+    <URL:sub_dir/bar.txt>
+    .
+    .
+    EOF
+
+  When this URL is executed by thlnk.vim, the following happens:
+
+  - The URL "sub_dir/bar.txt" is recognized as a relative URL (because it does
+    not contain a protocol).
+
+  - Every relative URL has to be transformed into an absolute URL.
+    This is achieved by combining it with the base URL.
+
+    The base URL is the URL of the document which contains the URL
+    minus its file name. In our case:
+
+	"file:///full/path/to/"
+
+    (When foo.txt itself was retrieved through, say, the http: protocol,
+    then the base URL might read something like "http://www.host.de/.../". 
+    Thlnk.vim's \gs command shows you the absolute URL of the current
+    document (see <URL:vim_h:thlnk-tutorial#tn=is the default> for
+    further information).
+
+      abs. URL of containing doc.   file:///full/path/to/foo.txt
+    - file component		    foo.txt
+    --------------------------------------------------------------------
+    = base URL			    file:///full/path/to/
+    + relative URL		    sub_dir/bar.txt
+    --------------------------------------------------------------------
+    = absolute URL		    file:///full/path/to/sub_dir/bar.txt
+
+  It's always an absolute URL which is executed by thlnk.vim. Relative
+  URLs are never executed directly! They are transformed into absolute
+  URLs in order to get executed.
+
+
+4.3 Common Pitfails				    	*thlnk-commonpitfails*
+
+Absolute URLs do not combine!!!!!!			*thlnk-absdontcombine*
+
+  (Combination is explained above |thlnk-howrelscombine|
+
+  The following makes no sense:
+
+    <URL:file:../do/not/do/this>	    # VERY BAD
+
+  Here is the easy rule:
+  When the protocol -- `file:' in our case -- is present, then it's an
+  absolute URL! If it is absent, then it is a relative URL.
+  Be always aware of this rule!
+
+  An absolute URL is taken as it is! The ../ in the example suggests a
+  relative path. But since the URL is absolute, the path will _not_ be
+  combined with the path of the document containing that URL. Executing this
+  link is about the same as when you type the vim command:
+
+    :edit ../do/not/do/this
+
+  That means: the result depends on the current directory, not on
+  the directory of the file containing the URL. Not what you want!
+
+  The moral of the story is:
+  1. When you use a protocol like file: or http: in your URL, then you have
+     to give the complete path in the URL!
+  2. Use relative URLs (i.e. URLs without a protocol) whenever possible!
+     See |thlnk-userels|
+
+
+Protocol and file type are different things		*thlnk-protvsftype*
+
+  Linking to a HTML file does not mean that you necessarely need the http:
+  protocol then! Protocol and file type (= media type) of the link target
+  are completely independant.
+
+  You can have http: to retrieve a txt file:
+
+    <URL:http://www.ietf.org/rfc/rfc2396.txt>
+
+  Or you can have file: to retrieve a (normally local) html file:
+
+    <URL:file:///usr/local/apache/htdocs/index.html>
+
+  This second example is more important for normal thlnk.vim usage. Namely
+  when using thlnk.vim for editing your website. Thlnk.vim can directly
+  execute links in html files and it normally does that by implicitly using
+  the file: protocol. See also |thlnk-footnote-htmledit| and
+  |thlnk-tutmeddep|.
+
+
+4.4 Tips						*thlnk-tips*
+
+4.4.1 Clever Usage of :Gu command			*thlnk-tipsguusage*
+
+Thlnk.vim's :Gu command|thlnk-:gu| can be used to solve a problem which is
+frequently discussed in the Vim mailinglists.
+
+You want edit a file in a "far away directory", e.g.
+
+    :e /really/an/annoying/long/path/to/src/main.c
+
+Now it occurs quite often, that you want to see another file in the
+same directory as main.c, e.g. option.c. Instead of using
+
+    :e /really/an/annoying/long/path/to/src/option.c
+
+you can just say:
+
+    :Gu option.c
+
+That's really convienient (even without having completion support by
+Vim).
+
+Some people use autocommands to always :cd to the new directory.
+I found, :Gu is a good alternative. I also often use:
+
+    :Gu .
+
+to invoke the file explorer as an intermediate step. `.' really is the
+shortest URL in the world, I guess! You can even use file explorer's `c'
+command to change to that directory:
+
+    :Gu .
+    c
+
+I think this demonstrated the benefit of relative editing (relative
+URLs). Perhaps Vim should support that anyway!?
+
+
+4.4.2 Start web browser on URL				*thlnk-tipsstartbro*
+
+That's also a thing frequently asked in the Vim mailinglists:
+
+    "Can I start my web browser on an URL?"
+
+We all know, that Bram doesn't want to turn Vim into a web browser (and I'm
+really glad for that). But thlnk.vim offers a solution. By default, thlnk.vim
+can work as a HTML source browser (see |thlnk-footnote-htmledit| and
+|thlnk-tutmeddep|). That means, executing the URL:
+
+    http://www.vim.org
+
+(with the Visual-gu command |thlnk-v_gu| as there is no embedding <URL:...>)
+retrieves the file index.html of www.vim.org and shows it as HTML source code.
+
+But in this case of a remote URL you rather want the homepage of www.vim.org
+be displayed in your web browser. See |thlnk-ctrbstartbro| how to achieve
+that.
+
+Note: Choosing between source or interpreted HTML should be an option in an
+upcoming version of thlnk.vim.
+
+
+==============================================================================
+5. A source code example				*thlnk-sourceex*
+
+Suppose that you are viewing a C source file using Vim, which looks like this
+(see |thlnk-footnote-lin|):
+
+    [./drivers/scsi/ibmmca.c]
+    .
+    .
+    .
+    struct logical_device {
+       // ...
+       int device_type; /* type of the SCSI-device. See
+			   <URL:../../include/scsi/scsi.h#tn=DEVICE TYPES> --+
+			   for interpretation of the possible values */	     |
+       // ...								     |
+    };									     |
+    .									     |
+    .									     |
+    .									     |
+    EOF									     |
+									     |
+You want to know which values `device_type' can take. You move the cursor    |
+somewhere over the given URL. Then execute the Vim command `\gu' - "Go Url"  |
+defined by thlnk.vim - and vim shows up the file scsi.h. Moreover, scsi.h    |
+shows up at a specific position which is defined by searching the text       |
+string "DEVICE TYPES" in forward direction beginning from the top. So the    |
+result is your Vim window showing something like this:			     |
+									     |
+    [./include/scsi/scsi.h]						     |
+    .									     |
+    .									     |
+    .									     |
+    /*									     |
+     *  DEVICE TYPES			    		<--------------------+
+     */
+
+    #define TYPE_DISK           0x00
+    #define TYPE_TAPE           0x01
+    #define TYPE_PRINTER        0x02
+    #define TYPE_PROCESSOR      0x03    /* HP scanners use this */
+    #define TYPE_WORM           0x04    /* Treated as ROM by our system */
+    #define TYPE_ROM            0x05
+    #define TYPE_SCANNER        0x06
+    #define TYPE_MOD            0x07    /* Magneto-optical disk - 
+					 * - treated as TYPE_DISK */
+    #define TYPE_MEDIUM_CHANGER 0x08
+    #define TYPE_COMM           0x09    /* Communications device */
+    #define TYPE_ENCLOSURE      0x0d    /* Enclosure Services Device */
+    #define TYPE_NO_LUN         0x7f
+
+    .
+    .
+    .
+    EOF
+
+To return to the orginal C file you just execute the well known vim command
+`CTRL-O', which acts as your BACK button.
+
+You see: thlnk.vim enables Vim to execute hot links.
+
+Thlnk.vim is not restricted to program source files. You can use it for
+everything you edit with a text editor. That's even ok for non-Vimmers or
+people who don't know about thlnk.vim, because they can understand what is
+meant, and search the target manually.
+
+Some Explanation:
+Thlnk.vim executes completely regular URLs. The notation <URL ... > is an URL
+embedding which is recommended for plain text.  The suffix `#tn=DEVICE TYPES'
+is called a fragment specifier.  `tn=' is introduced by thlnk.vim. This is
+fully in conformance with URL specifications, as the interpretation of a
+fragment only depends on the media type of the target file. For text/plain -
+which is the case with our scsi.h file - a fragment syntax is not defined as
+far as I know, so I decided to choose a syntax. But, that's why Thlnk is also
+intended to be a project. This should be subject to discussion.
+
+
+==============================================================================
+6. Gallery of examples					*thlnk-gallery*
+
+NOTE: I write url: instead of URL: to indicate an example that cannot be
+executed live. (This is just a convention, as the case of the embedding
+doesn't actually matter.)
+
+<URL:http://www.vim.org/index.html>
+    (Can be executed live when you have the wget utility installed.)
+    Retrieve and display Vim homepage. Like a web browser, but the html file
+    is displayed as source.
+
+<url:../path/to/myFile.txt#sect1>
+    A relative URL: the path is relative to the file that contains
+    this URL.
+    Addresses a specific position in file `myFile.txt', which is defined
+    by searching the string `id=sect1'.
+
+<url:../path/to/myFile.html#sect1>
+    Similar to previous example. But the position in the target file
+    `myFile.html' is defined by HTML means: the anchor tag <A NAME="sect1">.
+    (Thlnk.vim implements this html fragment addressing by simple searching,
+    which is ok for most uses.)
+    Comparing this example to previous you see that the interpretation
+    of the fragment depends on the file type (= media type) of the target
+    file.
+
+<url:myFile.txt#line=23>
+    Addresses the 23rd line in `myFile.txt'.
+    The same would be true for the file `myFile.html' !
+
+<url:/path/to/hello.c#tn=hello, world>
+    In file `hello.c' addresses the position which is defined by forward
+    searching the string `hello, world', beginning at the first line of
+    the file.
+    (Thlnk.vim introduces three new fragment expressions: line=, tn=, tp= .
+    See |thlnk-fragexpr|)
+
+<url:ftp://someHost.de/path/to/hello.c#tn=hello, world>
+    Dito, but another, remote hello.c
+
+<URL:vim_h:design-documented>				*thlnk-ex_vim_h*
+    This is an example for a non standard "protocol".  Thlnk.vim introduces
+    the Vim specific protocol `vim_h:' for convenience and as a demonstration
+    for the URL concept. This URL definition is in full compliance to the
+    URL/URI specification!
+
+    What does it do?  It links to the vim-help-item `design-documented', i.e.
+    display it. Like typing `:help design-documented' on the command line. Or,
+    like the Vim online help embedded notation `|design-documented|'. But with
+    the difference, that the URL version also works when the file containing
+    the link is not part of the vim help!
+
+    You can extend a vim_h link with #... fragments, e.g.
+    <URL:vim_h:design-documented#line=4>. That's 4 lines downwards from the
+    position which the URL without the fragment yields. (Not 4 lines downwards
+    from the top of the file which contains that help item.)
+
+<url:/usr/bin/lpr?myFile.txt%3e>
+    Thlnk.vim also supports the query syntax!
+    When a query part `?' in the URL exists, thlnk.vim treats the URL as an
+    "executable resource". Similar to CGI on the web.
+
+    In this example, the `lpr' program is executed: print myFile.txt on the
+    line printer (unix only, not portable due to explicit path).
+
+    Using queries, one might turn plain text files into forms or User
+    interfaces. Example: +----------------------------------+
+			 |       PRINT THIS PAGE            |
+			 | <url:/usr/bin/lpr?myFile.txt%3e> |
+			 +----------------------------------+
+
+<URL:file:?dir%3e>
+    Somewhat obfuscated but straight forward: Executes a shell with no
+    program, but with `ls' link to `dir' Programm, i.e. executes it. Presents
+    a directory-listing in the result buffer (works on win, linux, substitute
+    dir to ls for all unix'es)
+
+<url:/usr/stb/Mail/search?20001025234042.A29199@zellner.org>
+    Searches my mail folders for an email with a given `Message-Id'.
+    The program search might be a perl script.
+
+<url:file://c:/autoexec.bat>				*thlnk-ex_drive*
+    Windows Drive character can be given in the `authority' part
+    of the url.
+    Note, that on Windows your URL still has forward slashes - 
+    an `U'RL is `U'niform, e.g. <url:file://e:/path/to/file>
+
+<URL:http://www.google.com/images/title_homepage4.gif>	*thlnk-ex_image*
+    Retrieve and display picture. Thlnk.vim recognizes the media-type `image'
+    which is delegated to an appropriate viewer.
+    Note: As for thlnk-1.2 the unix utility `xv' is used there as the helper
+    application. In a hard coded way (thlnk.vim doesn't support configuration
+    yet). You might have a look at the source: <URL:vim_x:thlnk_vim#_xv>
+    and hack it to meet your needs.
+
+
+==============================================================================
+7. Brief refresher on URL and URI			*thlnk-uriprim*
+
+Uniform Resource Identifiers are specified in RFC 2396, see
+<URL:http://www.ietf.org/rfc/rfc2396.txt>. This document is really worth
+reading... but to save you some time I'm trying to present here what you need
+for using thlnk.vim.
+
+URI vs. URL						*thlnk-uri-uriurl*
+-----------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^1.2.> )
+
+URL - Uniform Resource Locators are a subset of URI: An URL is an URI. As the
+name says, an URL identifies a resource by its (network) location. Other ways
+to identify a resource are suggested with "Uniform Resource Names" (URN).
+URI = URL | URN.
+
+But for the purpose of thlnk.vim you can ignore the difference between URIs and
+URLs.
+
+The three letters U, R, I				*thlnk-uri-3letters*
+-------------------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^1.1 Overview>
+  The following material is directly taken from there )
+
+URI are characterized by the following definitions:
+
+Uniform
+   Uniformity provides several benefits: it allows different types of resource
+   identifiers to be used in the same context, even when the mechanisms used
+   to access those resources may differ; it allows uniform semantic
+   interpretation of common syntactic conventions across different types of
+   resource identifiers; it allows introduction of new types of resource
+   identifiers without interfering with the way that existing identifiers are
+   used; and, it allows the identifiers to be reused in many different
+   contexts, thus permitting new applications or protocols to leverage a
+   pre-existing, large, and widely-used set of resource identifiers.
+
+Resource
+   A resource can be anything that has identity.  Familiar examples include an
+   electronic document, an image, a service (e.g., "today's weather report for
+   Los Angeles"), and a collection of other resources.  Not all resources are
+   network "retrievable"; e.g., human beings, corporations, and bound books in
+   a library can also be considered resources.  The resource is the conceptual
+   mapping to an entity or set of entities, not necessarily the entity which
+   corresponds to that mapping at any particular instance in time.  Thus, a
+   resource can remain constant even when its content---the entities to which
+   it currently corresponds---changes over time, provided that the conceptual
+   mapping is not changed in the process.
+
+Identifier
+   An identifier is an object that can act as a reference to something that
+   has identity.  In the case of URI, the object is a sequence of characters
+   with a restricted syntax.
+
+Having identified a resource, a system may perform a variety of operations on
+the resource, as might be characterized by such words as `access', `update',
+`replace', or `find attributes'.
+
+
+URI Syntactic Components				*thlnk-uri-syntcomp*
+------------------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^3. URI Syntactic> )
+
+An URI goes like this:
+
+    <scheme>:<scheme-specific-part>
+
+That means, that the thing behind the colon is specific to the scheme!
+The scheme-specific-part is also known as the `opaque' component.
+But many schemes have a hierarchical structure, which is also defined by
+RFC 2396. The syntax for hierarchical URI is:
+
+    <scheme>://<authority><path>?<query>
+
+The `authority' often is a host name (but can also be, say, a windows drive,
+see <URL:#windrive>). An example for a non hierarchical
+URI is the vim_h scheme, e.g. `vim_h:help'. Another example is the mailto
+scheme: mailto:stb@bf-consulting.de
+
+Each of the above components may be missing, and its still a valid URI.
+
+
+URI References						*thlnk-uri-refs*
+--------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^4. URI References>)
+
+    URI reference = URI # fragment
+
+The fragment is not part of an URI! But it often appears in conjunction with
+it, so RFC2396 deals with the fragments also. Thlnk.vim doesn't care much
+making the correct distinction. Most often it is clear from the context.
+
+
+Fragment Identifiers					*thlnk-uri-fragids*
+--------------------
+( References: <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^4.1. Fragment> )
+
+It is very important to realize, that fragment interpretation only depends on
+the media type of the "retrieved" document. Not from, say, the scheme, i.e.
+the protocol.
+
+This property is utilized by thlnk.vim since it defines fragment syntax for
+generic, unstructured text (i.e. tn= line=).
+
+
+Absolute and relative URI				*thlnk-uri-relabs*
+-------------------------
+( Reference:
+  <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=Relative URI references are distinguished> )
+
+URI come in two forms: relative and absolute. The rule to distinguish between
+the two is very simple:
+
+    Scheme component exists = It's an absolute URI
+
+Normally, a relative URI is transformed into an absolute URI by the
+application context in which the relative URI appears. Context = base URL
+
+
+Escaping forbidden characters				*thlnk-uri-forbchars*
+-----------------------------
+( Reference: <URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^2. URI Char>)
+
+Only a limited set of ascii characters are allowed in an URI.  Some other
+characters, like < > ? / : for example, are reserved characters, in the sense
+that they have a special meaning for the URI itself.
+
+If you need to use a forbidden or reserved chararacter, you have to escape it
+by its hex value. Examples:
+
+    `>'		-> `%3e'
+    ` ' (blank) -> `%20'
+
+Hint: With Vim just use the :asc command <URL:vim_h:asc> to find out the hex
+value of a chararacter.
+
+If you are in doubt if a chararacter is forbidden you can also escape allowed
+chararacters. Example: <URL:vim_h:%61%73%63>
+
+
+==============================================================================
+8. Possible future development				*thlnk-possfutdev*
+
+8.1 Some ideas for the future of plain text hyperlinking    *thlnk-future*
+
+Extended Links etc.
+    thlnk.vim only offers what is called in XML/XLink a  SIMPLE LINK, and that
+    is much the same from what one is used to from HTML.  XLink also offers
+    EXTENDED LINKS: There are  MULTIENDED LINKS , there is the possibility
+    that a LINK-START (Thlnk's <URL:...>) has not to be INLINE, i.e. the link
+    doesn't start where the link is defined. This leads to EXTERNAL LINKING
+    DATABASES.  Thlnk should borrow from XML/XLink those ideas and concepts.
+    There is much to learn from!
+
+Spans
+    In XLink/XPointer a fragment can be a span, something like #span(XPointer,
+    XPointer) (XPointer is the XML specification that deals with the
+    fragments).  Translated to Thlnk we could have for example #span(tn=from
+    text,tn=to text)  or #span(tn=from text,line=33)).  So a fragment is no
+    more just a position (like in HTML), but a "real fragment".  Only with
+    real fragments the goal of "compound documents" can be realized.
+
+Relative Location Terms
+    Again from XPointer, translated to Thlnk we could have:
+    #tn=two words.line=3
+
+Tag file = external linking datatbase (id=tfeld)
+    Consider a tag file as an external linking datatbase!
+    The first column is the link source, the second and third together
+    are the link end. - 
+    Example for second and third column:
+    file= ./geo/geo.hxx   ex-address= /^typedef int Eidx;$/
+    <=>
+    <URL:./geo/geo.hxx#tn=^typedef int Eidx;$>
+
+Adding attributes to a link
+    In thlnk.vim-1 a link essentialy just consits of an URL.  Inspired by
+    general linking concepts (the syntax is borrowed from XML/XLink) we could
+    introduce some attributes:
+
+    show= embed	(like HTML's img tag)
+	  replace (that's the default with \gu at the moment)
+	  split	(like the ,gV mapping)
+	  new	(new instance of vim, like netscape sometimes does)
+
+    actuate= user (like <A HREF=...>
+	   = auto (like HTML's img tag <IMG SRC=...>)
+
+    Example 1: <LINK: actuate=auto url=picture.jpg> could display the picture when
+    this line is displayed by Vim.  The show-attribute is like the ,gX
+    variations but given by the author of the document, not the user (browser)
+    of the document.
+
+    Example 2: Using actuate=auto for redirect.
+
+    [somefile.txt]
+    .
+    .
+    <URL:ref.db#1>
+    .
+    .
+    EOF
+
+    [ref.db]
+    .
+    .
+    id=1 <URL:actuate=auto uri=myOtherUri>
+    .
+    .
+    EOF
+
+Auto-executed programs
+    When the actuate=auto is combined with a query URI we have an
+    auto-executed program.
+
+    Yet another attribute (not XLink I think) - just ad hoc for presenting
+    the idea:
+
+    process= show     (that's the default)
+	     source   (e.g. don't _show_ a .vim file but :source it)
+	     execute  (... maybe not necessary because of query interface)
+
+    Example: "Remote Sourcing":
+    <URL: process=source uri=http://vimscriptserver.org/myscript.vim>
+
+
+8.2 An idea for a Thlnk application:			*thlnk-annotsys*
+
+A system to allow individual user annotations to the Vim online documentation.
+
+This is inspired from and similar to an example given in `The XML HANDBOOK'
+from Carles Goldfarb, isbn:0-13-81152-1, Chapter 13 `Extended Linking'.
+
+Sketch of the system (just to give you the basic idea):
+
+- You have a collection of files, one per contributor, containing the
+  annotations to certain topics of the vim online help. The files are
+  named vimann_<id>.txt and look like this:
+
+  [vimann_stb.de.txt]
+  .
+  .
+  <URL:vim_h:visual-search>
+      This command I found to be very useful.  Its for example useful to test
+      if a word sequence is good for a tn= expression. IMHO there should be a
+      standard mapping
+  .
+  .
+  EOF
+
+- Generate for each .txt-file of the vim online help an annotation file with a
+  parallel line numbering such, that the corresponding links appear at the
+  appropriate line numbers.  E.g. we have a program `generate_annot [list of
+  annot_<id>.txt files]', yielding  annot_autocmd.txt, annot_change.txt,
+  annot_cmdline.txt ...  as output.
+
+- Display that annotation file as a narrow buffer side to side
+  (:vsplit'ted) to the txt-file.
+  (I think an autocommand could be used to detect an annot-file and to do 
+  the vsplit'ting and the loading.)
+
+  That might look like this
+
+    [vim/vim57/doc/visual.txt]
+    .										  |
+    .										  |
+    i<CR><Esc>      break the line before the Visual area                         |
+    !!date<CR>      filter the Visual text through date                           |
+    kJJ             Join the lines back together                                  |
+                                                                                  |
+                                                            visual-search         | <URL:vimann_stb.txt#tn=\
+    Here is an idea for a mapping that makes it possible to do a search for the   |      URL:vim_h:visual-search>
+    selected text:								  |
+            :vmap X y/<C-R>"<CR>                                                  |
+                                                                                  |
+    (In the <> notation |<>|, when typing it you should type it literally; you    |
+    need to remove the 'B' and '<' flags from 'cpoptions')                        |
+                                                                                  |
+    Note that special characters (like '.' and '*') will cause problems.          |
+                                                                                  |
+    Visual-block Examples                                   blockwise-examples    |
+    With the following text, I will indicate the commands to produce the block and|
+    the results below. In all cases, the cursor begins on the 'a' in the first    |
+    .										  |
+    .										  |
+    EOF										  | EOF
+
+
+- Remarks:
+
+  * The embedding <URL:...> seams too verbose. Could work with shorter or
+    without embedding at all: define a special embedding for &ft=annot.
+
+  * The whole system could be online using the internet.
+    Maybe http://vim.sf.net, CVS or even emails could be used to contribute to
+    the "annotation database".
+
+  * Annotations other than `user annotation' are possible, for example
+    reporting typos (just addressed to the mantainer of the online help).
+
+  * The above is based on simple links (see * <URL:vim_h:thlnk-future#tn=^Ext>).
+    Using a linking database and extended links could possibly allow to
+    realize the system possible without the generate_annot program; without
+    any special handling at all.
+
+    By the way: An extended link might look like this:
+
+    <URL: link="extended" inline="false"
+	  start=vim_h:visual-search
+	  end=vimannot_stb.de.txt#tn=^vim_h:visual_search>
+
+    That definition would live in some file (the linking database).
+
+
+==============================================================================
+9. Contributions					*thlnk-contrib*
+
+9.1 Example for an URL enriched txt file		*thlnk-ctrurlenrich*
+
+To demonstrate the power of plain text URLs an example for a
+URL enriched txt file is given here:
+
+  <URL:http://www.bf-consulting.de/thlnk/vim/download/example.hxt>.
+
+This file is derived from the manual of the mutt mailer:
+<URL:http://www.mutt.org/doc/manual.txt>. The manual's source is
+an sgml File (doctype linuxdoc). I made a change to the sgml2txt-filter,
+so that instead of a plain text manual I got a "hypertext enriched
+plain text file"
+
+Just load it and follow the links. The interesting parts are the
+same-document-links, i.e. <URL:#xxx> links. In my opinion such a hypertext
+enriched plain text file is much more valuable than just plain text.
+
+
+9.2 Start web browser on URL				*thlnk-ctrbstartbro*
+
+Please read also |thlnk-tipsstartbro| !
+
+For every protocol (= scheme) a handler function exists. The standard handler
+function for file:, http:, rcp: etc (see |thlnk-tutsuppscms| for a list) that
+come with the thlnk.vim distribution are defined in the separate file
+<URL:vim_x:thlnkscm_vim>. You can:
+
+1. Invent new protocols by writing a handler function
+2. Reimplement an existing handler
+
+Just define a function and you are done!
+
+Here is an example which reimplements the http handler. (Thanks to Klaus
+Horsten <horsten@gmx.at> for this contribution.) We want to call the web
+browser on an URL instead of displaying the source code in Vim.
+
+
+fu! Thlnk_AddressScheme_http(auri)
+    " Internet Explorer   ADJUST PATH!!!
+    exe 'silent !start "C:\Programme\Internet Explorer\IEXPLORE.EXE" ' . a:auri
+    """ Netscape
+    """ exe '!netscape -remote openURL\(' . a:auri '\)'
+
+    if v:shell_error
+	let v:errmsg = "Shell Error on browser start"
+	echohl ErrorMsg | echo v:errmsg | echohl None
+    endif
+    return ''
+endfu
+
+
+Adjust the above code to suite your needs (netscape or IE, IE path), and put
+it into a file extra_thlnkscm.vim in the after directory, see
+<URL:vim_h:runtimepath>. E.g.
+
+    ~/.vim/after/plugin/extra_thlnkscm.vim	on Unix, or
+    $HOME\VIMFILES\extra_thlnkscm.vim		on Windows
+
+Eventually create these directories! Then restart Vim. Check if the
+new handler is active by typing:
+
+    :fu Thlnk_AddressScheme_http
+
+The above code should show up. Test the new handler now:
+
+    http://vim.sf.net		Execute with {Visual}gu |thlnk-v_gu|
+    <URL:http://vim.sf.net>	Execute with \gu |thlnk-gu|
+
+
+Note: Fragments #xxx won't work. In:
+http://www.bf-consulting.de/thlnk/vim/footnotes.html#example_1
+the fragment is just ignored.
+
+
+==============================================================================
+10. Known Bugs and Todo's				*thlnk-bugstodos*
+
+Please send bug reports to: see <URL:vim_x:thlnk_vim#tn=Maintainer>
+
+10.1 Known Bugs
+
+- The mappings \gE, \gV which split the screen when executing an URL
+  are not respected for a same document reference, e.g. executing
+  \gV on <URL:#tn=this> doesn't split the screen. The same is true
+  when the file is the same, e.g. <URL:thlnkusr.txt#tn=this>.
+
+- Thlnk.vim should not not ignore the shell return value from wget.
+  E.g. catch http "File Not Found" errors.
+
+- Always retrieves remote documents again.
+  Should make cache lookup. For this a canonical URL representation
+  is a todo.
+  Example: In this file, <URL:http://www.ietf.org/rfc/rfc2396.txt> is
+  referenced several times. Each time you execute such a link, this txt file
+  is retrieved from the server. (Trick to workaround: type \gc and then
+  `gf' on the temporary file in the cache. When there is  a fragment it has to
+  done by hand .)
+
+- Vim6 on Mac OS.					*thlnk-os_mac*
+  As Patrik Nyman <patrik.nyman@orient.su.se> pointed out for his "classic"
+  mac (pre OS X), using Axel Kielhorn's Vim6 port, only the odd syntax 
+    <URL:file:complete:path:to:file.txt> 
+  works. The basic problem seems:
+  Thlnk.vim and Mac have different notions of absolute and relative.
+  Is there another Mac user who can help?
+
+
+10.2 Todos
+
+(Also see the places marked `upd' in the source files.)
+
+- thlnk.vim should provide a user configuration possibility.
+  `xv', `xfig', `mutt' etc should not be hard coded.
+
+- The tilde ~ notation for the HOME Directory should be supported
+  in URLs, e.g. <URL:~/.vimrc>
+
+- Supply a links checker utility.
+  I already have one, but its a hack of the sources at the moment.
+
+- Html2hxt filter utility.
+  A filter to convert retrieved html files to "lnk-enriched" text files, e.g.
+  a program html2hxt (hxt = hyper-txt = txt with links). I tried to hack
+  lynx to do so, perhaps Perl's HTML::FormatTex module should be considered.
+  Thlnk integration might be done by using 2 cache files!  first file: the
+  retrieved html file, second file: the generated hxt-file!?  I.e. keep the
+  html source in case one is interested in the source!?
+
+
+==============================================================================
+11. Thanks						*thlnk-thanks*
+
+Thanks to my partner Wolfgang Fleig <wfg@bf-consulting.de>
+for his help, co-authoring, dialectical antithesis and sponsoring.
+
+Thanks to Ines Paegert for her impulses.
+
+Thanks to Bram Moolenaar <Bram@moolenaar.net> for the Vim editor.
+
+Thanks to the people who contributed with questions, bug reports,
+suggestions, patches, discussion or just motivation:
+
+    Klaus Horsten <horsten@gmx.at>.
+    Patrik Nyman <patrik.nyman@orient.su.se>
+    Engelhard Heﬂ <Engelhard.Hess@artofbits.de>
+    Grant Bowman <grantbow@grantbow.com>
+    Ward Fuller <wfuller@SeeBeyond.com>
+    Mark S. Thomas <Mark.Thomas@SWFWMD.STATE.FL.US>
+
+
+==============================================================================
+FOOTNOTES
+
+----- *thlnk-footnote-lin*
+
+This example is taken from the linux-2.4.18 source code distribution,
+from the file ./drivers/scsi/ibmmca.c there. The original definition
+of that C struct reads like this:
+
+/*local data for a logical device */
+struct logical_device {
+   struct im_scb scb; /* SCSI-subsystem-control-block structure */
+   struct im_tsb tsb; /* SCSI command complete status block structure */
+   struct im_sge sge[16]; /* scatter gather list structure */
+   unsigned char buf[256]; /* SCSI command return data buffer */
+   Scsi_Cmnd *cmd;  /* SCSI-command that is currently in progress */
+   int device_type; /* type of the SCSI-device. See include/scsi/scsi.h
+		       for interpretation of the possible values */
+   int block_length; /* blocksize of a particular logical SCSI-device */
+   int cache_flag; /* 1 if this is uncached, 0 if cache is present for ldn */
+   int retry_flag; /* 1 if adapter retry is disabled, 0 if enabled */
+};
+
+
+----- *thlnk-footnote-plaintext*
+      What is plain text?
+For our purposes it is sufficient to say: Everything you edit and view
+in your text editor. That is source code, txt-files, HTML-Files etc.
+
+
+----- *thlnk-footnote-seebelow*
+      Examples for turning references like "see below" into hotlinks.
+
+If you don't understand the following examples, you first might want to read
+|thlnk-getstart| an then come back.
+
+The following examples are real world examples. They all are taken from the
+Vim source code distribution.
+
+Example 1
+---------
+The following excerpt from src/Makefile:
+ # 4. "make test"  {{{1
+ #   This is optional.  This will run Vim scripts on a number of test
+ #   files, and compare the produced output with the expected output.
+ #   If all is well, you will get the "ALL DONE" message in the end.
+ #   See below (search for "/^test").
+
+could be turned in an "urlified" hotlink version like this :
+ # 4. "make test"  {{{1
+ #   This is optional.  This will run Vim scripts on a number of test
+ #   files, and compare the produced output with the expected output.
+ #   If all is well, you will get the "ALL DONE" message in the end.
+ #   See <URL:#tn=^test>
+
+Remark: `tn=' just means "search forward for ^test" (tn stands for "text next"
+and is a syntax introduced by the Thlnk project. The URL is still a valid URL
+though).
+
+Example 2
+---------
+The following excerpt from src/edit.c:
+     case '.':       c = 'v'; break;
+     case ';':       c = 't'; break;
+     default: {
+		  static char str[] = "zqbcxlsjphmkwonu ydafe rig";
+ #ifdef EBCDIC
+		  /* see note about islower() above */
+		  if (!islower(c))
+ #else
+		  if (c < 'a' || c > 'z')
+ #endif
+		      return c;
+		  c = str[CharOrdLow(c)];
+		  break;
+	      }
+
+could be turned in an "urlified" hotlink version like this :
+     case '.':       c = 'v'; break;
+     case ';':       c = 't'; break;
+     default: {
+		  static char str[] = "zqbcxlsjphmkwonu ydafe rig";
+
+ #ifdef EBCDIC
+		  /* see <URL:#tn=NOTE: islower> */
+		  if (!islower(c))
+ #else
+		  if (c < 'a' || c > 'z')
+ #endif
+		      return c;
+		  c = str[CharOrdLow(c)];
+		  break;
+	      }
+
+The referenced note about the islower function (i.e. the target of the
+hyperlink) is in the same file (src/edit.c) and looks like this:
+ #ifdef EBCDIC
+	 else if (islower(c))
+ #else
+	 /* NOTE: islower() does not do the right thing for us on
+	  * Linux so we do this the same was as 5.7 and previous, so it
+	  * works correctly on all systems.  Specifically, the e.g. Delete
+	  * and Arrow keys are munged and won't work if e.g. searching for
+	  * Hebrew text.
+	  */
+	 else if (c >= 'a' && c <= 'z')
+ #endif
+	     return (int)(map[CharOrdLow(c)] + p_aleph);
+	 else
+
+Remark: The URL link is not only executable (when Vim is URL enabled
+using the thlnk.vim plugin). Also the code quality can be increased,
+as dangling links can be detected automatically!
+
+Example 3
+---------
+The following excerpt from vim61/README.txt:
+
+    WHAT IS VIM
+
+    Vim is an almost compatible version of the UNIX editor Vi.  Many new
+    featur es have been added: multi-level undo, syntax highlighting, command
+    line histor y, on-line help, filename completion, block operations, etc.
+    There is also a Graphical User Interface (GUI) available.
+    See "runtime/doc/vi_diff.txt" for differences with Vi.
+
+    This editor is very useful for editing programs and other plain ASCII
+    files .
+
+could be turned in an "urlified" hotlink version like this :
+
+    WHAT IS VIM
+
+    Vim is an almost compatible version of the UNIX editor Vi.  Many new
+    featur es have been added: multi-level undo, syntax highlighting, command
+    line histor y, on-line help, filename completion, block operations, etc.
+    There is also a Graphical User Interface (GUI) available.  See
+    <URL:runtime/doc/vi_diff.txt> for differences with Vi.
+
+    This editor is very useful for editing programs and other plain ASCII
+    files.
+
+Example 4
+---------
+The following excerpt from vim61/src/README.txt :
+
+    You might also want to read ":help development".
+
+could be turned in an "urlified" hotlink version like this :
+
+    You might also want to read <URL:vim_h:development>.
+
+vim_h "Vim Help" is a special protocol introduced by thlnk.vim. See
+another example here|thlnk-ex_vim_h|.
+
+Example 5
+---------
+The following excerpt from vim61/src/README.txt :
+
+    Updating the screen is mostly postponed until a command or a sequence of
+    commands has finished.  The work is done by update_screen(), which calls
+    win_update() for every window, which calls win_line() for every line.
+    See the start of screen.c for more explanations.
+
+could be turned in an "urlified" hotlink version like this :
+
+    Updating the screen is mostly postponed until a command or a sequence of
+    commands has finished.  The work is done by update_screen(), which calls
+    win_update() for every window, which calls win_line() for every line.
+    See <URL:screen.c#tn=displaying> for more explanations.
+
+
+----- *thlnk-footnote-docmanag*
+      Using plain text URLs for project and document management.
+
+Project management is much about keeping all the stuff together. There is
+something like a project library, which is a collection of all the files,
+documents, fragments, references, email references etc.  Contents are: source
+code, analysis documents (OOA), design documents, problem specification,
+change documentation, historical views, notes from meetings or email messages.
+All that I have in text files (.txt, .xml, .cxx, .java, .pl, mbox) whenever
+possible - all connected and linked together by plain text URLs.
+
+There are also index files, which look something like:
+
+    masterindex.txt:
+    <URL:doc1.txt>  bla bla
+    <URL:doc2.txt>  ...
+    <URL:spec.txt>
+    .
+    .
+
+Similarly you can implement executable tables of contents using URLs.
+
+With the assistance of external helper programs you can also integrate
+figures and pictures:
+    <URL:sketch.fig>
+    <URL:photo.jpg>
+
+
+----- *thlnk-footnote-htmledit*
+      Do HTML-editing and -browsing using Vim.
+
+The thlnk.vim plugin is useful for editing and browsing local html files
+"under construction". You can execute HTML-Hyperlinks from within Vim. Hitting
+`\gu' when you have the following hyperlink under the cursor:
+
+    <a href="footnotes.html#htmledit">
+
+executes that link like a web browser does (N.B. big difference: source code,
+not interpreted html).
+
+Note, that we dont't expect a <URL:...> embedding here. The interpretation of
+what is a link and how it is handled depends on the media type of the file
+containing the link. Which is text/html in this case. Likewise, the
+interpretation of the fragment depends on the media type of the target (also
+text/html in our example). That's all nothing but straightforward URL
+concepts!
+
+If you have the external utility wget installed, this also works remotely, you
+can execute, for example,
+
+    <A HREF="http://vim.sf.net>
+
+is directly executable. In such a remote case, thlnk.vim works with temporary
+cache files like netrw.vim does.
+
+
+----- *thlnk-footnote-handlemail*
+      Handle Your Email
+
+Perhaps you have (like me), some file where you document your marketing and
+sales activities. You log the history of contacts to a certain company or
+person:
+
+    - 11.09.01 9:30 first contact to Mr. Miller
+      info-material sent by email <URL:/usr/stb/Mail/search?20011023160735.B1312>
+
+On my computer, when I execute `\gu' (the cursor being somewhere over the
+link) the email message with the Message-ID 20011023160735.B1312 shows up.
+
+Why?
+The `?' in the URL syntax means, that the Resource (/usr/stb/Mail/search) is
+executable, i.e. is a program. That's similar to CGI scripts on the web. So
+thlnk.vim executes my search program (a little perl script which I wrote),
+which extracts that specific email from my mailbox.
+
+Again, that's straightforward URL concepts applied.
+
+
+----- *thlnk-footnote-muchmore*
+      More Uses For Plain Text URLs
+
+Thlnk.vim is not restricted to local use. It supports the protocols http: ftp:
+by the help of external commands (the wget tool is needed for that. Perhaps we
+should use the netrw-plugin as an interface).
+
+There are special protocols implemented by thlnk.vim. In URL lingo a protocol
+is called a scheme because it not necessarely is a protocol.  The `mailto:'
+scheme is not a protocol, but <mailto:stb@bf-consulting.de> is a valid URL.
+Thlnk.vim implements a man: protocol. Example: <URL:man:gvimdiff> That's
+nicely implemented through the vim6 man-plugin (see :h man-plugin), which
+allows the browsing of man pages from within vim.  Using man: is useful for
+example to document program source code or for system administrators. Note,
+that you can directly address a fragment, e.g.
+
+    You can also start vimdiff with horizontal splitting, see
+    <URL:man:gvimdiff#tn=options>
+
+You can easily define you own protocols.
+
+More Uses:
+Use plain text URLs to implement your .txt based photo album etc...
+
+
+vim:tw=78:ts=8:ft=help:norl:
+vim600: set foldmethod=marker foldlevel=1:
+

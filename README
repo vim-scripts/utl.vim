@@ -1,0 +1,60 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=293
+
+--- WHAT IS UTL.VIM?
+
+It brings the benefits of URL-based hyperlinking to plain text, extending the
+URL syntax for plain text needs, in accordance with the RFC 2396 (towards
+current RFC 3986) URL specification.
+
+Utl is very easy to start. Just  :so %  the .vba file and dive into the live examples
+of the doc.
+
+--- USAGES
+
+- Open any URLs found in text with appropriate handler
+- Open files of any media type from within Vim (.pdf, .jpg, etc)
+- Small helper utilities via embedded Vimscript
+- Project management
+- Organizing ideas
+- Commenting source code
+- Personal Wiki
+- Editing HTML
+- Bookmark files, directories, URLs
+
+--- CHARACTERISTICS
+
+- Well documented and helpful verbose mode
+- Is easy to get started
+- Stays out of the way, no side effects
+- Extensible
+
+--- KEYWORDS
+Hypertext, URL, URI, email, footnotes, Wiki, bookmarks
+
+--- CHANGES SINCE UTL V2.0
+
+The most important changes are:
+
+- Added generic media type handler: open .pdf, .doc,
+  .jpg etc without the need to define handler variables.
+- Added support for footnote references: make "[1]"
+  executable.
+- Added scheme to open emails, e.g.
+  <mail:///Inbox?26.07.2008 16:01>
+- Added verbose mode: Better figure out what's going on
+- Added 'copy link/filename to clipboard' function
+- Changed user interface: Basic Command :Utl instead
+  only mapping \gu
+- Alternate http access method: open web documents
+  directly in Vim
+- Support network files (shares, NFS), e.g.
+  <file://127.0.0.1/path/to/file&gt;
+- Improved jumping back and forth
+- More versatile scheme handler interface
+- Fixed Bugs
+
+--- EXAMPLES
+
+For live examples and tutorial you can have a look into the docs
+without installing by opening the download link below and search
+for "getStarted"
