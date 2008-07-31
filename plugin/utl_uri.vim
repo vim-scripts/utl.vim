@@ -1,11 +1,11 @@
 " ------------------------------------------------------------------------------
-" File:		utluri.vim -- module for parsing URIs
+" File:		plugin/utl_uri.vim -- module for parsing URIs
 "			        Part of the Utl plugin, see ./utl.vim
 " Author:	Stefan Bittner <stb@bf-consulting.de>
 " Licence:	This program is free software; you can redistribute it and/or
 "		modify it under the terms of the GNU General Public License.
 "		See http://www.gnu.org/copyleft/gpl.txt
-" Version:	utl 2.0, $Revision: 1.7 $
+" Version:	utl 3.0a
 " ------------------------------------------------------------------------------
 
 " Parses URI-References.
@@ -35,6 +35,9 @@
 "   " UtlUri_build a new URI
 "   let uriNew = UtlUri_build('file', 'localhost', 'path/to/file', '<undef>', 'myFrag')
 "
+"   " Recombine an uri-without-fragment with fragment to an uri
+"   let uriRebuilt = UtlUri_build_2(absUriRef, fragment)
+"
 "   let unesc = UtlUri_unescape('a%20b%3f')    " -> unesc==`a b?'
 "   
 " Details:
@@ -49,13 +52,13 @@
 "   Ist not very performant in typical usage (but clear).
 "   s:UtlUri_parse executed n times for getting n components of same uri
 
-if exists("loaded_utl_uri")
+if exists("loaded_utl_uri") || &cp || v:version < 700
     finish
 endif
 let loaded_utl_uri = 1
 let s:save_cpo = &cpo
 set cpo&vim
-let g:utl_uri_vim = expand("<sfile>")
+let g:utl__file_uri = expand("<sfile>")
 
 
 "------------------------------------------------------------------------------
@@ -160,6 +163,21 @@ fu! UtlUri_build(scheme, authority, path, query, fragment)
     return result
 endfu
 
+"------------------------------------------------------------------------------
+" Build uri from uri without fragment and fragment
+"
+fu! UtlUri_build_2(absUriRef, fragment)
+
+    let result = ""
+    if a:absUriRef != '<undef>'
+	let result = result . a:absUriRef
+    endif
+    if a:fragment != '<undef>'
+	let result = result . '#' . a:fragment
+    endif
+    return result
+endfu
+
 
 "------------------------------------------------------------------------------
 " Constructs an absolute URI from a relative URI `uri' by the help of given
@@ -208,8 +226,14 @@ fu! UtlUri_abs(uri, base)
     "	    step b)
     let new_path = new_path . path
 
-    " Possible Enhancement: implement the missing steps (purge a/b/../c/ into
-    " a/c/ etc)
+    " TODO: implement the missing steps (purge a/b/../c/ into a/c/ etc),
+    " CR048#r=_diffbuffs: Implement one special case though: Remove ./ segments
+    " since these can trigger a Vim-Bug where two path which specify the same
+    " file lead to different buffers, which in turn is a problem for Utl.
+    " Have to substitute twice since adjacent ./ segments, e.g. a/././b
+    " not substituted else (despite 'g' flag). Another Vim-Bug?
+    let new_path = substitute( new_path, '/\./', '/', 'g') 
+    let new_path = substitute( new_path, '/\./', '/', 'g') 
 
     return UtlUri_build(scheme, authority, new_path, query, fragment)
 

@@ -1,6 +1,6 @@
 *utl_usr.txt* Plugin for executing URLs in plain text files
 *utl* *utl-plugin* 
-For Vim version 6, Version: utl-2.0, $Revision: 1.14 $
+Version Utl v3.0a ALPHA, for Vim version 7, 2008-07-31
 
 
 		       Utl.vim User Manual
@@ -11,112 +11,68 @@ For Vim version 6, Version: utl-2.0, $Revision: 1.14 $
 	Contents:
 
 		1. Intro........................|utl-intro|
-		2. Getting started..............|utl-getstart|
+		2. Getting started..............|utl-start|
 		3. Tutorial.....................|utl-tutorial|
-		4. Examples of use..............|utl-examples|
-		5. Tips, details, pittfalls.....|utl-tipsdetails|
-		7. Changes since Utl/Thlnk-1.2..|utl-changes|
-		8. Todo list....................|utl-todolist|
-		9. Credits......................|utl-credits|
+		4. Smart Samples................|utl-smartSamples|
+		5. Usage Patterns...............|utl-usagePatterns|
+		6. Tips, details, pittfalls.....|utl-tipsDetails|
+		7. Configuration and Options....|utl-config|
+		8. Changes since Utl v2.0.......|utl-changes|
+		9. Todo.........................|utl-todo|
+	       10. Credits......................|utl-credits|
 
 
-See |utl_ref.txt| for some reference material.
-See http://vim.sf.net/script.php?script_id=293 for installation instructions
+See http://vim.sf.net/script.php?script_id=293 for getting and installing
+Utl.vim.
 
 See |utl-changes| for things that have changed in this version.
 
-Any comments, bug reports, pachtes, fixes and suggestions are welcome, and
-sometimes needed for my motivation. See |utl-todolist| if you want to
-contribute to Utl.
+Any comments, bug reports, patches, fixes and suggestions are welcome.
 
 Happy linking,
-Stefan Bittner <URL:mailto:stb@bf-consulting.de>
+Stefan Bittner <url:mailto:stb@bf-consulting.de>
+
 
 ==============================================================================
 1. Intro						*utl-intro*
 
-Welcome to utl.vim!
+What is Utl.vim?
 
-What is Utl.vim
----------------
+It brings the benefits of URL-based hyperlinking to plain text, extending the
+URL syntax for plain text needs, in accordance with the RFC 2396 (towards
+current RFC 3986) URL specification.
 
-* It brings the benefits of URL-based hyperlinking to the realm of plain text,
-  extending the URL syntax for plain text needs, in accordance with the RFC 2396
-  URI specification.
+Keywords: Hypertext, URL, URI, email, footnotes, Wiki.
 
-* It's a handy utility for you right away
+Usages:
+- Open any URLs found in text with appropriate handler
+- Open files of any media type from within Vim (.pdf, .jpg, etc)
+- Small helper utilities via embedded Vimscript
+- Project management
+- Organizing ideas
+- Commenting source code
+- Personal Wiki
+- Editing HTML
 
-* It's fun :-)
-  surfing text files, executing text ...
+Characteristics:
+- Well documented and helpful verbose mode
+- Is easy to get started
+- Stays out of the way, no side effects
+- Extensible
 
-
-What is it good for?
---------------------
-
-* Enables Vim to be your central desktop application, for instance:
-
-  - Easily navigate in collections of related text files via hyperlinks
-  - Call web browser and email client on URLs (configurable protocol handlers)
-  - Call MS-Word on .doc files, Acrobat Reader on .pdf, Windows Explorer on
-    directories, IrfanView on .jpg etc. (configurable media type handlers)
-  - Maintain pictures from your digicam based on a text file
-  - Maintain a personal info file containing hotlinks
-
-* Use it for project management, software development, report preparation and
-  technical writings. For instance:
-
-  - Reference emails from text files
-  - Reference bug tracker database from a text file
-
-* Smart usages. For instance:
-
-  - Embed vim commands in text files and source code.
-  - Use it as light weight spell checker,
-  - or for dictionary lookups.
-  - Start programs using Utl.
-  - Use it for relative editing and
-  - for navigating HTML source code.
-
-* Use it for quality commenting of source code. For instance:
-
-  - Reference related code with hot links, e.g. reference the definition of a
-    struct in C/C++
-  - Reference design papers, UML diagrams, man pages etc from source code
-  - Turn references like "see below" and "type zR to open the folds" into
-    hotlinks
+Now lets dive into the live examples.
 
 
-Utl.vim is easy 
------------------
+=============================================================================
+2. Getting started				*utl-start* *utl-getStarted*
 
-* You only need to know one single command to get started: \gu = Go URL 
-
-  1. Type :help utl-getstart 
-  2. Hit \gu on the live examples given there 
-
-  As a reader of texts containing URLs that's all! As an author you have to 
-  know how to write URLs. But utl.vim gives you a training. And what you 
-  will learn is 90% general knowlegde about URLs that you can use elsewhere. 
-
-* Utl.vim is friendly: 
-  No side effects, fits seamlessly into your Vim Session, well documented. 
-
-Want to give Utl a try? Fine, so lets just dive into the live examples:
-
-
-==============================================================================
-2. Getting started					*utl-start*
-
-Utl.vim's basic mapping is \gu which stands for "Go Url". That's all you need!
-
-Note: If you have changed the mapleader string your actual mapping might also
-be ,gu or _gu or whatever, see |mapleader|.
+Utl.vim's basic command to open an URL is :Utl . That's all you need!
 
 Live Examples now!!!
 
 Position the cursor on the next line:
-    <URL:#r=here>
-Then hit `\gu'. This should take you ...
+    <url:#r=here>
+Then type the comamnd  :Utl . This should take you ...
     id=here.
 
 You just executed your first link!
@@ -124,52 +80,87 @@ You just executed your first link!
 you know HTML: that's analogues to a <A HREF="#abc"> which refers to
 ID="abc".) The `r' in the expression stands for `reference'.
 
-Hitting `\gu' on <URL:#tn=some text> takes you to ... some text.
+Executing  :Utl  on <url:#tn=some text> takes you to ...
+						        some text.
 
 The special syntax `tn=' just means that the target of the link is defined by
-searching the denoted string (some text) in forward direction (tn stands for
-Text Next). You can leave away the `tn=' prefix and just write <URL:#some
-text> because the tn= is the default prefix.
+searching the denoted string 'some text' in forward direction (tn stands for
+Text Next). You can omit the `tn=' prefix and just write <url:#some text>
+because the tn= is the default prefix.
 
-Hitting `\gu' on <URL:utl_ref.txt> takes you to the file utl_ref.txt.
+Executing  :Utl  on <url:../plugin/utl.vim> takes you to the file utl.vim.
 
 Please come back here again after having executed the link!
 
-Hitting `\gu' on <URL:utl_ref.txt#tn=^thanks for> takes you to a specific
-position in the file utl_ref.txt. This example can be seen as the combination
-of the two previous examples: URL + #xxx
+Executing  :Utl  on <url:../plugin/utl.vim#tn=thanks for> takes you to a
+specific position in the file utl.vim. This example can be seen as the
+combination of the two previous examples: URL + #xxx
 
 The #xxx suffix is called a fragment expression in URL lingo.
 
-Hitting `\gu' on <URL:http://www.vim.org> will invoke your web browser with
-that URL. Just try it, Utl will assist you to set up your favorite browser.
+Executing  :Utl  on <url:http://www.vim.org> will invoke your web browser with
+that URL. Just try it, if you are lucky Utl.vim already knows how to open web
+pages, else Utl.vim will assist you to set up your favorite browser.
 
-You can leave away the <URL:...> embedding. Try for example:
+You can leave away the <url:...> embedding. Try for example:
 
     http://www.vim.org
 
-or even		     +------- This is also a link which you should execute :-)
-		     |
-    www.vim.org [#r=foot1]
+or even
 
-An advantage of embeddingless links is that normally you will find URLs in
-given documents in this form. Also, some people find the <URL:...> embedding
-too clunky. The disadvantage is that there is no safe parsing for "naked" URLs
-and as one consequence of this, no syntax highlighting.
+    www.vim.org
+
+An advantage of embedding-less links is that normally you will find URLs in
+given documents in this form. Furthermore the <url:...> embedding can be a bit
+clunky. The disadvantage is that there is no safe parsing for "naked" URLs and
+as one consequence of this, no syntax highlighting.
+
+The above utl.vim link without embedding reads:
+    ../plugin/utl.vim
+For some file in the same directory as the current file you would have:
+    ./someFile.txt
+or, a file without a suffix:
+    otherFile
+or
+    WikiWord
+This means that you can use Utl.vim to turn Vim into your personal Wiki.
+There a specialized Vim plugins (vimwiki, potwiki.vim), but people
+told me the linking (and document creation) feature already does a good part
+of the job.
+
+Utl.vim supports links that could be called reference style links or just
+footnotes. Position the cursor on the [10] in the next line and execute :Utl :
+
+    The software can be downloaded from [10]
+    .
+    .
+    [10] http://www.vim.org/download.php
+
+One often encounters such references in given text. So Utl.vim does not invent
+a new syntax but just supports what is there. (The same is actually true for
+the for the URL based links.)
+
+From now on I will use those [] -footnotes :-) 
 
 You can also type an URL in the command line:
 
-    :Gu utl_ref.txt	# Edit file in same directory as current file
-    :Gu www.google.com	# Start web browser from within vim. Sometimes
-			# faster than from desktop :-)
+    :Utl openLink ../plugin/utl.vim	# Open file that is in same directory
+					# as current file
+or in short form
+
+    :Utl ol ../plugin/utl.vim	    # same as above
+
+Other 
+    :Utl ol www.google.com	    # Open web page from within vim. Sometimes faster
+				    # faster than from desktop.
 
 If you feel it's now time for a "hello world" test, just go ahead and write
 your own links. There is no meta data and no tags file needed. Its nothing
 but plain text.
 
-Before you seriously start using utl.vim it is recommended to continue with
-reading the next chapter, 3, Tutorial. If you are in doubt if Utl valuable for
-you, have a look at chapter 5, Examples of use, |utl-examples| first.
+Before you seriously start using Utl.vim it is recommended to continue with
+reading the next chapter, 3, Tutorial. If you are in doubt if Utl is valuable
+for you, have a look at chapter 5, Examples of use, |utl-examples| first.
 
 
 ==============================================================================
@@ -178,12 +169,12 @@ you, have a look at chapter 5, Examples of use, |utl-examples| first.
 
 3.1 Forth and back					*utl-tutforthback*
 
-From the previous chapter you already know how to follow links by hitting \gu
-when a link is under the cursor.
+From the previous chapter you already know how to follow links by executing
+:Utl  for links under the cursor.
 
 The following link, as you know, takes you to another file:
 
-    <URL:utl_ref.txt>
+    <url:../plugin/utl.vim>
 
 Try this now! ... No, Wait! To come back here again, just use the regular
 vim command CTRL-O. That's the BACK-Button in the "Vim browser" - and it might
@@ -197,60 +188,106 @@ Hope you are back again.
 
 The following URLs are all equivalent:
 
-    <URL:utl_ref.txt>
-    <URL:./utl_ref.txt>
-    <URL:../doc/utl_ref.txt>
+    <url:utl_usr.txt>
+    <url:./utl_usr.txt>
+    <url:../doc/utl_usr.txt>
 
-These are all  _relative_  URLs. This means that the path given in the URL is
-relative to the path of the document containing the URL. Note that this is
-different to Vim's :e command where file names are relative to the current
+These are all so called relative URLs. This means that the path given in the
+URL is relative to the path of the document containing the URL. NOte that this
+is different to Vim's :e command where file names are relative to the current
 working directory (see |:pwd|). Whenever possible you should use relative
-URLs. But sometimes you need  _absolute_  URLs, just as you sometimes need
-absolute path names with Vim's :e command. Here is an absolute URL[#r=foot3]:
+URLs. But sometimes you need absolute URLs, just as you sometimes need
+absolute path names with Vim's :e command. Here is an absolute URL:
 
-    <url:file:///home/stb/.vim/doc/utl_ref.txt>
+    <url:file:///home/stb/.vim/plugin/utl.vim>
 
-An absolute URL _always_ has a so called scheme (also called protocol) in
+An absolute URL always has a so called scheme (also called protocol) in
 front, e.g. file: , http:, mailto: . (And, if there is a protocol in front it
 always is an absolute URL.) What also makes sense is to write the above URL
 without the protocol:
 
-    <url:/home/stb/.vim/doc/utl_ref.txt>   # equivalent to above
+    <url:/home/stb/.vim/plugin/utl.vim>	    # equivalent to above
 
 This is a relative URL (because there is no protocol) ... containing an
 absolute path. The contrary does not make sense: An absolute URL with a
 relative path:
 
-    <url:file:./utl_ref.txt>	# WRONG!!! Absolute URL with relative path
-				#	   makes an invalid URL.
+    <url:file:../plugin/utl.vim>    # WRONG!!! Absolute URL with relative path
+				    #	       is an invalid URL.
+
+When you try to execute this URL, the current implementation of Utl.vim opens
+a file  utl.vim  in the current working directory - not a good behavior
+for an URL.
+
+
+3.3 Running Utl.vim in verbose mode			*utl-tutverbosemode*
+
+Utl.vim supports a verbose mode:
+
+    :let utl_opt_verbose=1	# Switched on
+    :let utl_opt_verbose=0	# Switched off (default)
+
+Verbose mode can be very useful to figure out what's going on. For instance
+for the previous section you can see the different processing between absolute
+and relative URLs and how the latter are turned into absolute URLs by
+constructing a base URL. Try for example to execute:
+
+    <url:../plugin/utl.vim>
+
+with verbose mode switched on. Don't forget to use this feature when things
+get more complicated!
+
+
+3.4 Drive letters and network shares			*utl-tutdrivesshares*
 
 Under Windows you can specify drive letters like this:
 
     <url:file://d:/path/to/foo.txt> or, which is the same,
     <url://d:/path/to/foo.txt>
 
-This is in conformance with URL specifications. Note that you always should use
-forward slashes, no matter on what OS you are; URLs are universal and are
+This is in conformance with URL specifications. Note that you always should
+use forward slashes, no matter on what OS you are; URLs are universal and thus
 independent of the OS.
 
+Utl supports notation for network file access, e.g. Shares under
+Windows, NFS under Unix.
 
-3.3 Fragments						*utl-tutfrags*
+Windows Example: Utl converts <url://127.0.0.1/ADMIN$/System32/EULA.txt>
+internally into the UNC path \\127.0.0.1\ADMIN$\System32\EULA.txt, which is
+directly passed/edited to/by Vim, since SMB shares are transparent under
+Windows.
 
-Now lets add fragments to the URL.
+Unix Example: Utl converts <url://server/sharefolder/path> internally
+into  server:/sharefolder/path . (Don't really know if this makes
+sense :-)
+
+Windows Examples:
+<url://89.11.11.11/testinput/cfg/sid_7_configuration_list.txt>
+<url://56.240.74.41/c$/install_pers/setup.log>
+
+Utl does neither care if authentication is needed on the server resource nor
+does it offer direct means for authentication [20].
+
+
+3.5 Fragments						*utl-tutfrags*
+
+--- Intro						*utl-tutfragsintro*
+
+Now lets add fragments to URLs.
 The next link again references the same file as in the above examples, but is
 extended by a fragment expression. That way a specific position in the target
 file can be jumped to. Try to execute the link:
 
-    <URL:utl_ref.txt#tn=thanks for>
+    <url:../plugin/utl.vim#tn=thanks for>
 
 and come back again with CTRL-O. The next link specifies the same file, but
 the fragment expression is different:
 
-    <URL:utl_ref.txt#r=foot1>
+    <url:../plugin/utl.vim#r=foot1>
 
 Execute it and come back again! It took you to about the same position as the
 previous link, but by other means. The fragment `#r=foot1' means, that the
-file utl_ref.txt is searched for the ID reference `foot1'. What follows r=
+file utl.vim is searched for the ID reference `foot1'. What follows r=
 should be a simple string (an identifier to be exact).
 
 The #tn fragment has one big advantage over #r= fragments. It allows to
@@ -259,140 +296,755 @@ modify that target document, either because you don't want it or because you
 don't have write access. The advantage of the ID reference fragment is that
 the link is more robust.
 
-#tn= and #r= are the most important fragment specifiers in utl.vim. As
+#tn= and #r= are the most important fragment specifiers in Utl.vim. As
 already said, the #tn= prefix is the default prefix, i.e. you can leave it
-away. Thus the link above ( #tp=thanks ) will normally be written shorter:
+away. Thus the link above will normally be written shorter:
 
-    <URL:utl_ref.txt#thanks for>
+    <url:../plugin/utl.vim#thanks for>
 
 This is also called a naked fragment identifier because there is no `key='
 prefix. 
 
-Here is an overview of the available fragment expressions:
-
-    #tn=text	    Same as #text
-    #tp=text	    Stand for `t'ext `p'revious, i.e. define position by
-		    searching first occurance of `text' in backward direction.
-    #line=123	    Position defined by line number. Most useful for documents
-		    which won't change
-    #r=identifier   Position defined by the id `identifier'
-
-See |utl-fragexpr| for some explanation.
+The found string will _not_ get the current search string (I don't know why).
+This means it will not be highlighted and you cannot search the next
+occurrence with Vims  n  command. But the string is one up in the search
+history, so you can recall it from there.
 
 
-3.4 Other media types					*utl-tutmtypes*
+--- Line fragment and bottom up addressing		*utl-tutfragsline*
 
-URLs are not restricted to .txt files or web pages. You can, for instance,
-reference a MS-Word document:
+Another fragment identifier is #line. It positions to the given line,
+e.g. 
 
-    <url:foo.doc>
+    <url:utl_usr.txt#line=10>	(or #line=+10)
 
-To make this work you have to define a handler for .doc type files. Utl tries
-to make this a painless as possible through a smart setup facility. Go and
-execute the above link to see how this works. In URL and Utl terms a .doc type
-file is said to be of media type "application/msword". You can define a
-handler for any media type you like. See the explanations under
-<URL:config:#r=mediaTypeHandlers>. Here is a list of other typical media
-types for which you might want to set up handlers:
+This is useful for documents that won't change much. Negative numbers
+can be given as well:
 
-    <url:foo.pdf>   # PDF documents
-    <url:foo.rtf>   # Rich text format documents (emails)
-    <url:foo.ppt>   # Powerpoint documents
-    <url:foo.xls>   # Excel sheets
-    <url:img_0108.jpg>	 # All kinds of images
-    <url:path/to/some/directory>
-		    # Call Vim explorer, Windows explorer, shell  etc. on
-		    # directory
+    <url:utl_usr.txt#line=-10>
+
+This counts the lines from bottom of the buffer upwards, -1 specifies
+the last line. For the #tn identifier there is also a "bottom-up" possibility,
+the #tp identifier. Try and compare these two:
+
+    <url:utl_usr.txt#tp=vim>
+    <url:utl_usr.txt#tn=vim>
 
 
-3.5 Typing an URL					*utl-tuttypeurl*
+--- Relative addressing					*utl-tutfragsrel*
+
+So far all fragment addressing was relative from top or bottom of the buffer.
+It can also be relative to the current cursor position in two cases:
+
+a) Same-document references				*utl-tutfragsdref*
+
+These are URLs that only consists of a fragment. Examples:
+
+    <url:#line=3>
+    <url:#line=-3>
+    <url:#tn=fragment>
+    <url:#tp=relative>
+
+Same document references are often useful, for instance to turn phrases like
+"see above" into hotlinks. NOte that for an #r= -reference, see
+<#tp=ID Reference>, there is no relative addressing because only one id=
+target per file is assumed.
+
+b) Non file oriented resources and the Vimhelp scheme	*utl-tutfragsnonfile*
+
+The best example is the Vimhelp scheme, e.g. <url:vimhelp::ls> (which is
+hereby introduced). When you execute this URL the Vim help for the  :ls
+command is displayed. Although the help will normally be presented as a text
+file in Vim (namely doc/windows.txt) the file is not really the resource, the
+help item itself is the resource. It's often useful to use the Vimhelp URL and
+sometimes especially useful to combine it with a fragment. Example:
+
+    Readonly buffers are marked with `=', see <url:vimhelp::ls#readonly>
+
+The utl.vim source code gives more realistic examples, see for instance
+<url:../plugin/utl.vim#since a string>.
+
+See <url:../plugin/utl.vim#r=Utl_processFragmentText> for details about
+fragment processing.
+
+
+3.6 Other media types					*utl-tutmtypes*
+
+URLs are not restricted to .txt files or web pages. You can for instance
+reference a PDF document:
+
+    <url:foo.pdf>
+
+To make this work a handler for .pdf type files has to be present. If you are
+lucky Utl.vim already defined a handler for you. Utl.vim aims to provide a
+generic media type handler for the most common platforms. The generic media
+type handler should handle a file like the system does (e.g. left (double)
+click to the file in the systems file explorer). The generic media type
+handler is implemented by the Vim variable  g:utl_cfg_hdl_mt_generic .
+
+It can be overruled by a specific media type handler. For PDF files this would
+be g:utl_cfg_hdl_mt_application_pdf. See explanation under
+<url:config:#r=mediaTypeHandlers> how to provide a specific handler. Normally
+the generic handler will be sufficient. A specific handler is needed for instance
+if fragments should be handled (see |utl-tutextfrag|). 
+
+It is a good idea to test with verbose mode switched on if you want to
+define a specific media type handler If none of the handlers (specific and
+generic) is present, Utl.vim will try to make creation of a handler as
+painless as possible through a smart setup facility which is invoked
+automatically then [22].
+
+
+3.7 Link to folders					*utl-tutfolders*
+
+An URL can also specify a folder:
+
+    <url://c:/Program Files>	    # Windows
+    <url:/usr/local/bin>	    # Unix
+    <url:./tmp>
+    <url:.>
+
+Folders also have a media type associated: text/directory. This means
+the specific or the generic media type handler has to be present to open
+a folder-URL. Utl.vim predefines the specific handler. The definition is:
+
+    :let g:utl_cfg_hdl_mt_text_directory='VIM'
+
+The special value 'VIM' means that no external handler shall be called but the
+folder should be opened by (the current) Vim, which will use Vim's built in
+netrw directory browser. The special value 'VIM' can also be used for all
+other utl_cfg_hdl_mt_xxx handlers. Try to execute <url:.> to see how that
+works.
+
+But what if you want to open a directory not with Vim but rather with the file
+explorer of your system? Well, that is easy if your generic handler is set
+up [23]:
+
+    :let g:utl_cfg_hdl_mt_text_directory=g:utl_cfg_hdl_mt_generic
+
+Another possibility is to open a directory in a command-shell, i.e.
+open a shell with CWD set to the directory. Can be achieved by:
+
+    :let g:utl_cfg_hdl_mt_text_directory__cmd = ':!start cmd /K cd /D "%P"' " Windows (DOS box)
+    :let g:utl_cfg_hdl_mt_text_directory__cmd = ':!bash ... " Unix
+
+Unfortunately Utl.vim does not provide a means to dynamically choose one of
+these handlers, i.e. open one directory in Vim, the other in the systems
+explorer, the next in a command shell. But there is a workaround: Define
+mappings for the above assignments. See <url:config:r=#map_directory> for
+suggested mappings.
+
+
+3.8 Typing an URL					*utl-tuttypeurl*
 
 In a web browser there are two ways to go to a page:
+- You follow a hyperlink from the page you are in.
+- You type an URL in the address field.
 
-1. You follow a hyperlink from the page you are in.
-2. You type an URL yourself.
+Possibility 1 corresponds to ':Utl' in Utl.vim. Possibility 2 corresponds to
+the command. Examples:
 
-Possibility 1 corresponds to \gu in utl.vim. Possibility 2 corresponds to an
-utl.vim command :Gu
+    :Utl openLink ../plugin/utl.vim
+    :Utl openLink www.vim.org
 
-    :Gu utl_ref.txt
-
-You can use the :Gu command for editing another file which is in the same
-directory as the current file. Example:
+You can use this for editing another file which is in the same directory as
+the current file. Example:
 
     gvim /really/an/annoying/long/path/to/src/main.c
-    :Gu option.c
+    :Utl openLink option.c	" [24]
 
-I myself use :Gu for a lot for this purpose.
+I myself use :Utl a lot for this purpose. Most often I type directory-URLs,
+see previous section |utl-tutfolders|. And my favorite folder is . (dot), i.e.
+the current directory:
+
+    :Utl openLink .	    " or, shorter:
+    :Utl ol .
+
+So  :Utl ol .  opens the directory the current file is in. Either in Vim, the
+systems file explorer or in the command-shell. 
 
 
-3.6 Other commands to execute a link			*utl-tutothercmds*
+3.9 The Utl user interface				*utl-tutUI*
+
+Until now you know the commands  :Utl  (to open the URL under the cursor) and
+:Utl openLink myUrl  (to open a typed URL). The general command interface is:
+
+    :Utl <command> <operand> <mode>
+
+:Utl (without any arguments) is the same as:
+
+    :Utl openLink underCursor edit
+
+since these are the default values for the three arguments. Instead  edit
+which displays the file in Vim [25] with the Vim command  :edit  you might
+want to open the link in a split buffer or in a new tab and so on (just as
+you open files in Vim in many different ways):
+
+    :Utl openLink underCursor split	" Open link in split window
+    :Utl openLink underCursor tabe	" Open link in new tab
+
+Try these with the URL
+
+    <url:../plugin/utl.vim> !
+
+Utl.vim provides command line completion for the arguments to save typing. I
+recommend to set the 'wildmenu' option for enhanced completion [26]. Try:
+
+    :Utl co<Tab>	" or
+    :Utl co<CTRL-D>	" or
+    :Utl<Tab>		" etc.
+
+The completion works the like for second and third argument. Another aspect
+of completion besides saving typing is that it offers the possibilities in a
+menu like manner which makes it unnecessary to learn all the commands,
+especially those used less frequently [27].
+
+Additionally to completion Utl.vim supports abbreviations for the arguments.
+The following are equivalent:
+
+    :Utl openLink underCursor edit	" is same as:
+    :Utl ol uc edit			" is same as:
+    :Utl o u edit
+ 
+See <url:../plugin/utl.vim#r=cmd_abbreviations> for all abbreviations and
+explanation of the abbreviation rules. If you typed an abbreviation for
+an argument completion does still work for further arguments, e.g.
+
+    :Utl o u<CTRL-D>
+
+Again, verbose mode might help to figure out what's going on when playing with
+abbreviations.
+
+One design goal of the Utl.vim user interface is to make mappings obsolete
+for the most since commands are short enough. Note that you can save one
+character on :Utl,
+
+    :Ut
+
+is possible in standard Vim 7.1 [28]. See <url:../plugin/utl.vim#r=suggested_
+mappings> if you consider to use mappings anyway.
+
+
+3.10 Visual URLs					*utl-tutVisUrls*
+
+Sometimes you want to execute an URL which is different from what Utl.vim
+would parse out. Examples (desired URL underlined):
+
+    ~dp0register_packages.bat	" (Windows) file name not separated as (Utl) word
+        ---------------------
+
+    <url:./path/to/file.txt >	" Only the directory part wanted
+         ---------
+
+Visually select the URL, possibly copy to clipboard (with CTRL-C under
+Windows), then execute
+
+    :Utl openLink visual    " or, shorter
+    :Utl o v		    " [29].
+
+
+3.11 The Vimscript scheme				*utl-tutVimscript*
+
+Utl.vim supports a special non standard protocol to execute Vim commands from
+within a plain text document. It is introduced here because needed in the
+sections which follow. The general format is:
+
+    vimscript:<ex-command>
+
+Try these examples:
+
+    <url:vimscript::ls>	    " This which is the same as:
+    <url:vimscript:ls>	    " (i.e. you can omitt the `:')
+
+"Ex-command" is just the same as what you can type in an ex command line, for
+instance multiple commands can be concatenated with `|'. Example:
+
+    <url:vimscript:split|call input('I will open a new window now!')>
+
+Certain characters needed in an ex command line will collide with characters
+that have special meaning for URLs. In this case you have use normal URL percent
+encoding. Example:
+
+    <url:vimscript:call input('Hit %3creturn%3e to continue')>
+
+The  3c  is the hex value of the  <  character, the  3e  is the hex value
+of the  >  character. Just keep in mind that if an URL does not work, then try
+to encode the characters appearing dangerous with percent encoding [30].
+
+Vimscript ex commands are executed in the context of a function (namely
+the handler, <../plugin/utl_scm.vim#r=vimscript>). This has the implication
+that global variables must be prefixed with g:
+
+See |utl-smartsamples|for more vimscript examples. 
+
+
+3.12 Other commands and options to operate on an URL	*utl-tutOtherCmds*
+
+COPYLINK						*utl-tutCopyLink*
+
+Until now we always opened (displayed) the target of an URL, i.e. jumped to
+the URL. You can also copy the link to the clipboard:
+
+    :Utl copyLink	" or, shorter
+    :Utl cl
+
+This does the same as the right mouse popup function called 'copy link
+address' or so in web browser. Try for instance  :Utl cl  on
+
+    <url:../plugin/utl.vim>  and
+
+check the * register by executing
+
+    <url:vimscript::reg *>.
+
+NOte that the register contains an absolute URL, not a relative one. Copying
+links is often useful, for instance to email a link address to someone.
+
+Another nice usage is to open the current file in another Vim instance:
+
+    :Utl copyLink currentFile
+
+then switch to the other Vim instance and perform:
+
+    :Utl openLink <URL pasted from clipboard>
+
+This example also introduced the  currentFile  operand (you already know
+underCursor, visual, <typed URL>).
+
+
+COPYFILENAME						*utl-tutCopyFileName*
+
+Related to copyLink is copyFileName
+
+    :Utl copyFileName	    " or, shorter
+    :Utl cf
+
+which copies the full path to the clipboard. Try the URL with the command
+:Utl copyFileName:
+
+    <url:../plugin/utl.vim>
+
+and check the * register. Usage example: use  copyFileName  for a file you
+want to mail to someone as an attachment. Paste that file name in your mailer.
+Probably even more interesting is the other way round: You received a
+mail attachment and want to make it hot linkable from within a text file.
+Create a new link in the text file, e.g.
+
+    <url:./infos/20080523_Instructions_Workreports_ext.ppt> ,
+
+then perform
+
+    :Utl copyFileName 
+
+and paste the result into the 'save as' dialog of your mailer [31]. This can
+save you a lot of tedious browsing down directories in GUI programs
+(especially under Windows). CopyFileName does only work for (implicit or 
+explicit) file:// URLs, not for example for http:// URLs.
+
+The file name will have slashes or back slashes depending on your system.
+But you can force the one or the other (for instance if using Cygwin under
+Windows):
+
+     :Utl copyFileName underCursor backslash
+     :Utl copyFileName underCursor slash
+
+(As these are positional parameters you have to provide a second argument,
+'underCursor' here).
+
+
+For reference of all available commands and arguments see:
+
+    :Utl help commands
+
+
+3.13 The http scheme					*utl-tutscmhttp*
+
+Until now we concentrated on local files. The scheme for a local file is
+(implicitly or explicitly) `file', e.g. file://path/to/file. Of course
+an URL can be used to retrieve other than local resources (a web page) or
+other resources than files (an email). 
+
+Depending on what you are using Utl.vim for, file  might be the most important
+scheme, followed by  mail  and http . Lets consider http now.
+
+You already know that you can execute the links:
+
+    <url:http://www.vim.org>
+    http://www.vim.org
+    www.vim.org
+
+They are all equivalent. To make a http URL with fragment work, e.g.
+
+    http://www.vim.org/download.php#unix
+
+the defined handler has to support that, which might not be the case in
+the default setup. You have to set up a handler that supports the  %f
+conversion specifier. See the hints and instructions
+
+    <url:config:#r=schemeHandlerHttp>
+
+how to do this. A http URL does not necessarily mean "web browser". Consider
+for instance the URL:
+
+    <url:http://www.ietf.org/rfc/rfc3986.txt>
+							*utl-tutscmhttpwget*
+This is a plain text document. Wouldn't it much better to display it in Vim?
+Utl.vim provides interfacing to the non interactive download tool  wget . For
+this purpose the handler  utl_cfg_hdl_scm_http  has to be set up as:
+
+    :let g:utl_cfg_hdl_scm_http=g:utl_cfg_hdl_scm_http__wget
+
+    Use this vimscript service URL to do the configuration (unless you prefer
+    to type it in yourself :-)
+    <url:vimscript:let g:utl_cfg_hdl_scm_http=g:utl_cfg_hdl_scm_http__wget>
+
+Now try the above link with this configuration! The RFC3986 will be displayed
+in Vim as a temporary file. So now you can browse the RFC3986 document
+directly in Vim.
+
+It gets even more interesting if you want to address a specific part in the
+target document. Examples:
+
+    <url:http://www.ietf.org/rfc/rfc3986.txt#^1.1.2.  Examples>
+    <url:http://www.ietf.org/rfc/rfc3986.txt#line=343>
+
+    <url:http://www.vim.org/scripts/download_script.php?src_id=3640#horizontal or vertical>
+
+Now the ultimate combination of all techniques: retrieving a document from the
+web (with wget), using an external media type handler configured in Utl.vim
+for the ability to add a fragment:
+
+    <url:http://bullium.com/support/vim.pdf#page=3>
+
+See |utl-tutpdffrag| how to make this work. 
+    
+In practice the one URL you want to display with your browser, the other URL
+using the wget handler. Again (like |utl-tutfolders|) no real dynamic
+switching between the handlers is possible. The suggested workaround is again
+to define mappings that switch between the handlers, see
+<url:config:#r=map_http>.
+
+
+3.13 The mail scheme					*utl-tutscmmail*
+
+There is a special, non standard scheme for referencing specific emails
+from your local mail boxes via URL. For instance, executing the link
+
+    <url:mail:///Inbox?date=12.04.2008 15:04>
+
+will open the so specified email in your mailer. This can be very
+convenient if you are using Vim for project management, software
+development, PDA etc. It helps you to have all relevant information at your
+fingertips.
+
+The only implementation of the  mail  scheme currently available is
+MS Outlook (under Windows) [32]. If you use another mailer you might
+consider to contribute an implementation [33]. If you don't use Outlook but
+like to reference emails you can workaround: save the mail as file (.txt,
+.rtf, .msg etc format) and create a link to this file.
+
+If your mailer is MS Outlook read on.
+
+Suppose you have an email in your Inbox, received the 2008-04-12 at 15:04
+you can open the mail by executing the link (make sure that Outlook is
+already running!):
+
+    <url:mail:///Inbox?date=12.04.2008 15:04>
+
+Currently the date is locale dependent, the above sample is for a German
+Outlook. The date format is directly that of Outlook in the 'Received'
+column ('Erhalten in German), but without the week day prepended. The
+above can be written shorter as:
+
+    <url:mail:///Inbox?12.04.2008 15:04>
+
+since `date' is the default query [34]
+
+Examples using different mail folders are:
+
+    <url:mail:///Sent Items?12.04.2008 15:04>
+    <url:mail://archive/Inbox?12.04.2008 15:04>
+
+The form /// denotes the default folder (maybe this syntax is too Outlook
+specific).
+
+
+3.14 Other schemes					*utl-tutscmoth*
+
+							*utl-tutscmothstd*
+Besides file and http scheme Utl.vim currently Utl.vim supports the following
+standard schemes:
+
+    ftp:
+	Delegates to http (web browser to handle this)
+
+    https:
+	Delegates to http (web browser to handle this)
+
+    mailto:
+	Delegates call to your mail client. 
+	configurable by  g:utl_cfg_hdl_scm_mailto
+	Mailto URL specified at <url:http://www.ietf.org/rfc/rfc2368>
+
+	Examples:
+	<url:mailto:stb@bf-consulting.de>
+	<url:mailto:stb@bf-consulting.de?subject=otto&cc=karl.meier@web.de&body=test>
+	<url:mailto:majordomo@example.com?body=subscribe%20bamboo-l>
+
+    scp:
+	Uses Vims netrw-Plugin, see |scp|
+	configurable by  g:utl_cfg_hdl_scm_scp
+
+	Syntax:
+	<url:scp://hostname/path/to/file>
+
+							*utl-tutscmothnonstd*
+Moreover, besides mail, vimscript and vimhelp scheme Utl.vim introduces and
+supports the following non standard schemes:
+
+    man:
+	Accesss manual pages via URL.
+	Relies on the ManPageView plugin (:Man command) which needs to be
+	installed [35].
+
+	Example:
+	<url:man:ls>
+
+    config:
+	Utl specific. Ad hoc scheme for accessing Utls setup file.
+	Not really exciting.
+
+	Examples:
+	<url:config:>		(try it!)
+	:Utl ol config:
+
+    foot:	
+	Interface to make footnotes accessible via URL. Normally not called
+	directly but through heuristic form as has been explained at
+	<url:foot:10>. This will be elaborated in the next section.
+
+
+The schemes  http, mail, mailto, scp  are configurable by
+utl_cfg_hdl_scm_<scheme>. All other schemes not (yet). See <url:../plugin/utl.
+vim#r=spec_ihsv> for specification of that configuration interface.
+
+You can easily implement your own schemes or define new ones. You just
+implement a Vim function somewhere. Utl.vim dynamically calls those functions.
+Have a look at <url:../plugin/utl_scm.vim#r=implscmfunc> or just hack one of
+the existing functions in ../plugin/utl_scm.vim.  But I recommend that you
+read chapter 5, Tips, details, pitfalls,  before you write your own scheme
+handler. A common misunderstanding is to create a new scheme where support 
+media type support to an existing one would be the better choice. See
+|utl-privateScmHdl|for an elaborated example below.
+
+
+3.15 Footnotes						*utl-tutfoot*
+
+Now let's go into some detail with footnotes (reference style links).
+
+As you already know (from [10]), Utl.vim supports these commonly used
+references in square brackets:
+
+    The software can be downloaded from [11]
+    .
+    .
+    [11] http://www.vim.org/download.php
+
+Besides given texts from elsewhere, there are some Vim plugins that create
+such footnotes [36]. But AFAIK there is no tool except Utl.vim that cares
+about making them executable.
+
+Often, like in the previous example, the [] syntax is used to indirectly
+reference URLs because, citing from [36_2]: "Inline URIs [...] make the text
+around them obscure". Utl.vim normally does not dereference the reference
+target; in the example above it does not open the http:// Link
+
+Often [] references are used for simple footnotes:
+
+    This is true [101] 
+    .
+    .
+    [101] but not always
+
+In this case () style references like (*), (1),(2) might be more common,
+but this is not supported by Utl.vim.
 
 -----
-Normal mode commands
+Syntax Details						*utl-tutfragsyn*
 
-Until now we have used \gu to execute a link. That's the most important one.
-Utl.vim defines several other command. \gu corresponds to Vim's :edit. The
-other commands correspond to :view :sview etc. For example, the command \gE
-opens the URL under the cursor in a separate Vim window. Position the
-cursor on the following line and hit \gE to try this:
-    <URL:utl_ref.txt> 
-See |utl-commands| for the list of mappings and commands.
+References are not restricted to numbers, you can also use mnemonics
+or abbreviations like [UTL_RC]. Allowed characters inside [...] are
+_, A-Z, 0-9. Amongst others this style is useful for document reference.
 
------
-Visual-commands
+According to common use of references the slight syntax variations for the
+reference target are supported:
 
-There are also visual commands |utl-gourlvis|. But you will rarely need this.
-An example might be: `(see www.vim.org)', i.e. an URL without embedding which
-is surrounded by characters which confuse Utl's URL parsing (the ')' in this
-case. Highlight the URL (see |visual-use| if you don't know how) and execute
-\gu then.
+    [102]	This is used most often (and in all examples so far)
+    [102]:	A bit exotic, but more parse-safe [37].
 
+NOte that  102.  (= number followed by just a point, no square brackets), is
+not supported as reference target because in practice too often the wrong
+target is found. The 102. form is useed by [36_2]. 
 
-
-3.6 Supported schemes					*utl-tutsuppscms*
-
-Currently utl.vim supports the following protocols:
-
-    file:	# Protocol for accessing local files.
-		# If machine is given works like `ftp:'
-    ftp:	# Delegates to http, assuming that the browser handles this.
-    http:	# Delegates call to your web browser
-    https:	# Delegates call to your web browser
-    mailto:	# Delegates call to your mail client
-    man:	# Unix Man Pages scheme (see |utl-usesourcecode| for usage)
-    scp:	# If you have a scp command
-    vimscript:	# Vim specific. A scheme for executing vim commands. See
-		# |utl-exvs| for usage.
-    vimhelp:	# Vim specific. About the same as vimscript:help.  See
-		# |utl-exvimhelp| for usage.
-    config:	# Protocol for accessing Utl's setup file
-
-You can easily implement your own schemes or define new ones. You just define
-a Vim function somewhere. Utl.vim dynamically calls those functions. Have a
-look at <URL:../plugin/utl_scm.vim#r=implscmfunc>. I recommend that you read
-chapter 5, Tips, details, pitfalls,  before you write your own scheme handler.
-
-
-3.7 Miscellaneous					*utl-tutmisc*
+Obviously with the first form the reference source and target look the same.
+And it can actually be possible to switch the roles. When searching for the
+target, the source line is excluded. Often the reference target will be
+located at the bottom of the text, but needs not. The reference target must
+appear at the beginning of the line (after optional whitespace) [38]. ---
+Don't forget to run Utl.vim in verbose mode (see |utl-tutverbosemode|) if I
+confused you :-) Verbose mode also shows you the search algorithm.
 
 -----
-Creating files using Utl
+Footnote Fragments					*utl-tutfootfrag*
 
-If you execute an URL which points to a non existing file, this file (more
-exact: its Vim buffer) will be created. This is very useful when authoring:
-You write the URL in your document and then execute it. You can try this with
-the URL <URL:utl_foobar.txt>. People told me that this feature is useful for
-WIKI editing.
+You can append a fragment to [] references. Example:
+
+    [UTL_RC]#tn=1.3.
+
+This will open the target of the reference, i.e. file .plugin/utl_rc.vim and
+position the cursor according the fragment in this file. So adding a reference
+allows you to automatically forward a [] reference. Obviously this only makes
+sense if the reference target is a reference itself and not just a footnote
+text. Forwarding also happens with empty fragments. Try for example to execute
+this reference:
+
+    [36_1]#
+
+Reference fragments can be especially useful if you have more than one
+references into another document, e.g. 
+
+    [UTL_RC]#r=utl_cfg_hdl_scm_http
+    [UTL_RC]#r=utl_cfg_hdl_scm_scp
+    [UTL_RC]#r=utl_cfg_hdl_scm_mailto
+
+There is no Utl.vim option or so to let you choose whether to
+automatically forward or not.
+
+Well, #-fragments appended to [] style footnotes is a new syntax introduced by
+Utl, in the hope that it will be useful. 
 
 -----
-Multiline URLs
+Reference Links are implemented as URLs			*utl-tutfooturl*
 
-You can spread URLs across several lines like this: <URL:../plu
+Inside utl.vim there is not much special treatment of [] references, they are
+handled as URLs, a new non standard scheme "foot:" has been introduced. So
+most of the specific code is hence in the corresponding handler outside the
+kernel of utl.vim. The following Urls are equivalent: <url:foot:36> =
+<url:[36]> = [36]. Again, to see what's going on internally you can the
+verbose option: <url:vimscript:let g:utl_opt_verbose=1>
+
+
+3.16 Fragments to external Media Type Handlers		*utl-tutextfrag*
+
+As foretold at |utl-tutmtypes| defining a specific media type handler makes
+sense if you want to address fragments in files not displayed within Vim.
+Utl.vim offers limited support for PDF and MS Word documents.
+
+-----
+PDF page addressing					*utl-tutpdffrag*
+
+You can execute an URL like
+
+  <url:http://www.tech-invite.com/RFCs/PDF/RFC3986.pdf#page=4>
+
+if you use Acrobat Reader to display PDF documents. Enable enable the specific
+handler for media type application/pdf:
+
+- Execute <url:config:#r=utl_cfg_hdl_mt_application_pdf__acrobat>,
+- uncommment the two lines below the cursor and activate
+  the change by :w , :so %
+- Then look for a test PDF on you computer with a least 4 pages,
+  e.g. /path/to/my.pdf
+- Open this file with:
+  :Utl ol /path/to/my.pdf#page=4
+- follow the directives (to configure Acrobat Reader).
+
+This can be very useful for, say, to reference technical specifications (= PDF
+document) from within source code.
+
+NOte that addressing PDF pages this is not restricted to local files. To make
+the above http link work (after set up of the specific handler) you just need
+to bypass your web browser (AFAIK these do not support addressing pages) and
+use the wget handler as described in section |utl-tutscmhttp|.
+
+Currently only #page= fragments are supported.
+
+-----
+MS Word text search					*utl-tutwordfrag*
+
+Analog to PDF, to execute an URL like
+
+    <url:my.doc#tn=textToSearch>
+    <url:my.doc#textToSearch>	    (short form)
+
+you just need to enable the specific handler for media type
+application/msword:
+
+- Execute <url:config:#r=utl_cfg_hdl_mt_application_msword__word> and
+- uncommment the two lines below the cursor and activate
+  the change by :w , :so %
+- Then try a .doc URL (with tn= fragment) and
+- follow the directives (to setup the .vbs interface and configure MS Word).
+
+Currently only text search (#tn= fragment) is supported. 
+#page= and #r= for jumping to numbered elements, section, text marks etc
+would be desirable. 
+
+Addressing fragments can be quite useful for:
+
+- technical documentation if you use Vim for collecting and managing changes
+  of your document or to use Vim as annotation system for MS Word.
+
+- Referencing documents from within source code
+
+
+3.17 Creation of URLs				    	*utl-tutcreateurls*
+
+You might use Utl.vim mostly for "defensive" purpose: there is existing plain
+text like emails (pasted into Vim or using Vim as viewer), source code,
+READMEs and FAQs that contain URLs [39].
+
+But if you use Utl.vim for your own texts, documents and source code you might
+like to have ways to quickly create URLs and links. Here are some hints:
+
+To ease creation of an URL with embedding  <url ... >  you can define mappings
+in your .vimrc file ( without the trailing ">  ):
+
+    imap xu <url:			">
+    imap xuh <url:http://		">
+    imap xumi <url:mail:///Inbox?	">
+    imap xuh <url://c:/stb/home/	">
+
+Another thing is to create a link to a local file or a resource which you
+already have on your desktop. To create a file:// -URL for a file displayed in
+Vim (same or different session) you can:
+- go to the intended link target file,
+- type  :Utl copyLink currentFile, 
+- go to the intended link source file,
+- paste from clipboard
+
+That's all what the current version offers [40].
+
+
+3.18 Miscellaneous					*utl-tutmisc*
+
+-----
+Creating files by executing a link			*utl-createFiles*
+
+If you execute an URL which points to a non existing file, this file (firstly
+its Vim buffer) will be created. This is very useful for authoring: You write
+the URL in your document and then execute it. You can try this with the URL
+<url:utl_foobar.txt>. 
+
+
+-----
+Multiline URLs						*utl-multiLineURLs*
+
+You can spread URLs across several lines like this: <url:../plu
 gin/utl_uri.vim>. This is sometimes useful for long URL, see examples
-below at #r=lu. When typing an URL and Vim breaks it (beacuse it contains a
-space and Vim's 'tw' option set) you have to be careful: Utl eliminates all
-spaces around the line break. The above link is thus equivalent to <URL:../plu
+below at #r=lu. When typing an URL that Vim breaks (because it contains a
+space and 'tw' option is set) you have to be careful: Utl.vim eliminates all
+spaces around the line break. The above link is thus equivalent to <url:../plu
     gin/utl_uri.vim>. In order to preserve the space, you could escape it with
 %20 (see |utl-uri-forbchars| about escaping), e.g. <url:this filename
     %20contains blanks.txt>. But you could also just split at another position:
@@ -401,199 +1053,26 @@ spaces around the line break. The above link is thus equivalent to <URL:../plu
 
 
 -----
-Tilde support
+Tilde support						*utl-tildeSupport*
 
-You can use the ~ (tilde) character in URLs. Example: <URL:~/.vim/plugin/utl.
+You can use the ~ (tilde) character in URLs. Example: <url:~/.vim/plugin/utl.
 vim>. The ~ is replaced by the contents of the $HOME environment variable.
 On Unix system ~user also works. See |$HOME|.
 
 
 ==============================================================================
-4. Examples of use					*utl-examples*
-
-Here comes a rich collection of Utl examples, usage patterns and smart little
-examples. If you go another example it would be nice you mail it to me.
-
-
-4.1 Use Vim as your central desktop application		*utl-usedesktop*
-
-4.1.1 Index File					*utl-useindex*
-
-One usage is to maintain one or more text files which serve as an index or as
-a central point of references. Basically like this:
-
-    ---index.txt-----------------------{
-    <url:./foo/bar.txt>
-    <url:../docs/foo2.doc>
-    <url:../../quote/times.xls>
-    ---}
-
-Many people like to load such a file as buffer #1 when starting up Vim and
-then browse from there. Well, I do not use Utl for this, I rather work with a
-self written tags file for this purpose or with a session file (see
-vimhelp:mks) where a file always pertains to the same buffer number.
-
-
-4.1.2 Project Management
-
-Here is a real example. The following is the root file for a software project
-where the task is technical subproject management. The # comments are only for
-explanation and not in the original file. It looks something like this:
-
-    --- poland_project.txt ------------{
-    file: poland_project.txt - Poland Install project
-    hist: 13.07.04/Stb
-
-    References
-    ----------
-		      # Link to architecture working document
-    <url:../i/rcinstall_arch.txt>
-
-		      # Link to installation instructions
-    <url:../../data/PL Installation Procedure - IMS Installation.doc>
-
-    <url:cr.txt>	# Link to my change requests notes
-    <url:vers.txt>	# Link to SCM related stuff
-    <url:t.txt>		# Link to test reports
-    <url:t.txt#r=act>	# ... direct link to current test there
-
-		      # Link to root in document management system
-    <url:http://kstbx032.ww010.siemens.net/livelink/livelink.exe?func=ll&
-    objId=1007014&objAction=browse&sort=name>			    (id=lu)
-
-    Iinstall:		# Link to a specific document there
-    <url:http://kstbx032.ww010.siemens.net/livelink/livelink.exe/RC_D_
-    INSTALLATION_COMPONENT_IF_SPEC.doc?func=doc.Fetch&nodeId=1017472&
-    docTitle=RC_D_INSTALLATION_COMPONENT_IF_SPEC%2Edoc&vernum=1>
-
-		      # Hot link to the current installation CD
-    <url://q:/projekt_511/infrastructure/installation/polen/polen-cd>
-    .
-    .
-    Correspondance	# Threads of project specific correspondance
-    --------------
-    .
-    .								  # id=emailex
-    <url:corr/20041219_RE FormXtra 2.6 question.rtf> # Reference to a RTF email
-    <url:corr/20041220_RE FormXtra 2.6 question.txt> # Reference to a .txt email
-    <url:corr/20041221_RE FormXtra 2.6 question.htm> # Reference to a HTML email
-    .
-    .
-    -----------------------------------}
-
-The referenced files also contain links. I guess I do not have even one
-selfwritten file which does not contain URLs.
-
-
-4.1.3 Personal Info File				*utl-useinfofile*
-
-Quite many people maintain something like a personal info file (I also do).
-They note there for example:
-
-- Installation of tools they use on the job
-- Usage of tools they use, for instance CVS usage and commands
-- Links to network drives, resources and documentation
-- Web links (instead or additional to bookmarks/favorites in web browser)
-
-This file is much more useful if enriched with URLs!
-
-
-4.1.5 Other usages
+4. Smart samples					*utl-smartSamples*
 
 -----
-Address book						*utl-useaddressbook*
+Lookup word						*utl-lookupWord*
 
-I maintain all my contacts in a Vim written XML file. A Perl program parses
-this file and generates a Vim tags file. This tag file serves as the database
-for quick lookup of phone numbers, emails and addresses (contact me if you
-would like to try this). I use URLs in this file:
+You can use Utl's web browser integration to look up the word under cursor in
+the dictionary or encyclopedia of your choice with a mapping like:
 
-- to add references to contacts. Like order information, and emails
-- to execute email addresses (which normally are part of the contact
-  information)
-- to execute web pages related to the contact
-- link between addresses
-- link to encrypted login and passwords
-- ...
+    nmap ,l :exe ":Utl ol http://dict.leo.org/?search=" . expand("<cword>")
 
-
------
-Link Source Code Files					*utl-usesourcecode*
-
-This is an Utl usage of big potential in my opinion. But as Utl is currently
-only implemented for the Vim Editor (not for Emacs etc) this usage might be of
-real benefit only for people who have an own interest in quality source code.
-You can use Utl to:
-
-- link between the source code files using fragment addressing. For
-  instance point to a C/C++ header file where a structure/class is defined.
-
-- link from a source code file to Man pages using the man: scheme (Unix only).
-  See #r=foot5 for an example 
-
-- link from a source code file to design documents, illustration pictures
-  etc
-
-The Utl source code uses URLs itself, see for instance: <URL:../plugin/utl.vim
-#URL:vimhelp:cmdline-special>).
-
-
------
-Further usages
-
-- Is useful for technical writers.
-  Compile changes and references for a (MS-Word) document in a text file
-  containing URLs 
-
-- Make a photo index file.
-  Reference you photos from within text files which contain links to your
-  pictures plus annotation text for the photos.
-
-- Bug Tracker database.
-  Maintain a text file which has bug tracker IDs (or change requests more
-  generally) as entries:
-  
-    CR001 Error 8 from replace_client_c.bat 
-      date: 27.02.2005
-      status: implemented
-
-      text describing the problem...
-      text analyzing the problem...
-      ...including links to requirements documents, links to to emails
-      concerning the problem, e.g. <URL:corr/Re FormXtra 2.6 question.htm>,
-      cross references to other CR's
-
-    CR002 ...
-  
-  I maintain such a file for Utl development for instance. The Change Request
-  IDs I choose freely. On my job I also use such files, but the IDs are given
-  by the Bug Tracker database which we use there. Normally everything should
-  go into the bug tracker itself (says the upper management) but reality is
-  different. The Bug Tracker IDs have the form `BT12345' and I can execute
-  them as an UTL hotlink (see <URL:../plugin/utl.vim#r=heur_example>). Very
-  convenient.
-
-
-4.2 Smart examples					*utl-smartexamples*
-
------
-Spell Checker						*utl-spellchecker*
-
-You can use Utl's web browser integration for spell checking of words. With
-the following in your .vimrc file:
-
-    nmap ,l :exe "Gu http://dict.leo.org/?search=" . expand("<cword>")
-
-you can lookup the word under the cursor in a web dictionary with the command
-,l  . I use this quite often and this is my lightweight spell checking tool
-(especially when I have to write english text).
-
-
------
-Dictionary Lookup					*utl-dictlookup*
-
-The above mapping above is also useful as dictionary lookup translation
-english into german or vice versa. You can also make a similar mapping:
+This is practical for spell checking (despite Vim built in spell checker). The
+following mapping is similar:
 
     " Lookup of expression given on command line.
     " Of benefit because often faster than click click on desktop
@@ -601,46 +1080,116 @@ english into german or vice versa. You can also make a similar mapping:
     "		for%20that%matter
     "		for\ that\ matter 
     "		for+that+matter 
-    nmap ,m :Gu http://dict.leo.org/?search=
+    nmap ,m :Utl ol http://dict.leo.org/?search=
 
-In this form you type the word to lookup in the command line.
-
-
------
-Gu with dot dir						*utl-gudotdir*
-
-The following command is short but very useful:
-
-    :Gu .
-
-invokes the file browser for the directory where the current file resides. The
-file browser will typically be either Vim's file browser or Windows Explorer
-(or Konqueror on Linux), depending on how you configured the directory
-handler, see Config:#r=mt_dir. Both handlers are of benefit, depending on
-what you want to do. If the Vim file explorer is configured, the following is
-especially useful:
-
-    :Gu .
-    c
-
-i.e. you execute the command 'c' in the Vim file explorer to change the
-current working directory ( see vimhelp:current-directory ) accordingly. This
-enables you to use file name completion to edit files which are in the same
-directory as the previously edited file.
+is similar.
 
 
 -----
-Invoke Utl's media type handlers in file browser	*utl-fbcallmt*
+Vimscript heuristic URL					*utl-vimsHeuristicUrl*
 
-If you are in Vim's file browser you can use \gu to invoke the files and
-directories presented there with the Utl-defined media type handlers! For
-example open a MS Word document with MS Word, open a picture with irfanview,
-open a directory with Windows Explorer (if directory handler configured to
-Windows Explorer) etc. That's very convenient. Seems like magic first, but
-isn't, is completely straight forward and no special treatment by the utl.vim
-plugin (utl.vim is just lucky on one point: concerning directories, that they
-are presented with forward slashes even under Windows). It might be worth to
-note that you do not execute self written URLs here.
+As an enthusiastic Vim user reading vim tips or receiving help by other users
+you often get advices like
+
+    To tell Vim to jump to the already open window or tab instead of
+    creating a new window by some split command do:
+
+    :set switchbuf=usetab
+
+    See also:
+
+    :h 'switchbuf'
+
+With utl.vim you can execute both : lines directly. Just visually select the
+line and perform the command  :Utl openLink visual  (or shorter:  :Utl ol v ).
+This is implemented as a heuristic. Perform links with utl_opt_verbose=1 to
+see what's going on.
+
+
+-----
+Using vimscript URL for backup				*utl-vimsBackup*
+
+The following URL creates a copy of the file containing the URL under the
+name <current-date>_<current_file_name> to the directory /tmp. You can
+directly try the link (possibly after change of the /tmp directory to
+something else under Windows):
+
+    <url:vimscript::let dt=strftime('%Y%m%d_%H%M') | exe ':w /tmp/'.dt.'_%:t'>
+
+This can be convenient for files that should be backuped beyond some regular
+backup. The URL is portable, you can directly implant to a file of yours.
+
+
+-----
+Using vimscript URL for compiling			*utl-vimsCompile*
+
+If you use LaTeX you can insert the following in a .tex file to compile it
+using pdflatex (first URL) and to display it using the Utl.vim-configured
+pdf Reader (second URL):
+
+    %   <url:vimscript:!pdflatex %>
+    %   <url:vimscript:exe 'Utl ol '.expand('%:r').'.pdf'>
+
+
+-----
+Invoke Utls media type handlers in Vim file browser	*utl-fbcallmt*
+
+In the Vim file browser (netrw.vim) you can use  :Utl  to invoke the files and
+directories presented there with the Utl-defined media type handlers! Just
+useFor example open a MS Word document, show a picture, open a pdf document or
+open a directory with system file explorer etc. That's very convenient. Seems
+like magic first, but isn't, it is completely straight forward and without any
+special treatment by Utl.vim (run with utl_opt_verbose=1 to see what's going
+on). It might be worth to nOte that you do not execute self written URLs here
+but URLs in the wild.
+
+    " ========================================================================
+    " Netrw Directory Listing                                    (netrw v123e)
+    "   /home/stb
+    "   Sorted by      name
+    "   Sort sequence: [\/]$,\.h$,\.c$,\.cpp$,*,\.o$,\.obj$,\.info$,\.swp$,...
+    "   Quick Help: <F1>:help  -:go up dir  D:delete  R:rename  s:sort-by  ...   
+    " ========================================================================
+    ../
+    foo.pdf
+    pic_0123.jpg
+    tmp/
+
+
+-----					*utl-btSample* *utl-privateScmHdl*
+Reference your bug tracker database - a private scheme handler example
+
+If you are a software developer you might use a bug tracking system.
+Following the usage pattern |utl-projectManagement| information
+regarding individual bug tracking issues would be tracked in the
+project text file. Bug tracking issues are identified by some sort
+of ID. For an example let's name them BT1234, BT4711
+
+You can use Utl.vim to turn these references into hotlinks:
+
+Make a bug tracker scheme with the (abritrary) name 'bt', and hence
+URLs like
+    <url:bt:BT1234>, <url:bt:BT4711>
+
+Implement the protocol by defining in your .vimrc the handler
+function:
+
+    fu! Utl_AddressScheme_bt(url, fragment, dispMode)		" url= bt:BT4711
+	let btId = UtlUri_unescape( UtlUri_opaque(a:url) )	" btId = BT4711
+	let btUrl = 'http://server.company.com/bt/ticket/ticketView.ssp?\
+		     ticket_id='.btId.'user_id=foo&user_pwd=bar'
+	return  Utl_AddressScheme_http(btUrl, a:fragment, a:dispMode)
+    endfu
+
+Adapt the line specifying the web interface (btUrl=...). The call to
+Utl_AddressScheme_http means that the actual work is delegated to the http
+protocol handler. (See ../plugin/utl_scm.vim#r=implscmfunc for details on
+writing handler function if needed.). With this definition the above URLs can
+be executed. Also without embedding, e.g. just bt:BT1234. The bt: prefix is
+more owed to URL syntax needs than to practical concerns. To get rid of it
+define a heuristic. Currently this is only possible by hacking Utl.vim, but I
+did it already for you, see ../plugin/utl.vim#r=heur_example. With heuristic
+defined you can just execute a plain BT4711 anywhere in the text.
 
 
 -----
@@ -653,19 +1202,14 @@ The following starts a vncviewer client for me:
 The question mark at the end denotes that the path in front of it should be
 interpreted as a program to be executed. This is straight forward URL
 techniques, Utl applies the general URL query concept to programs which are
-directly accessible by your file system. See |utl-filequery| for some specs.
+directly accessible by your file system.
 
 You can also supply the server IP address to connect to:
 
     <url://q:/projekt_511/Iberl/vnc3.3.3R2/vnc_x86_win32/vncviewer/vncviewer.exe?89.11.11.242>
 
-Or you only link to the directory in order to start the program from
-there[#r=foot2].
-
-    <url://q:/projekt_511/Iberl/vnc3.3.3R2/vnc_x86_win32/vncviewer>
-
 Starting programs is especially useful in case of long, strange paths to the
-program which you either forget or which is simply to ennoying to type. This
+program that you either forget or which is simply to annoying to type. This
 can be an alternative to one liner programs. A good place to keep such links
 might be your info file, see |utl-useinfofile|.
 
@@ -681,307 +1225,262 @@ the end is the '>' character in escaped form (see |utl-uri-forbchars|). The
 program synchronously and write the output into a temporary file. The
 temporary file is then displayed in Vim. In the above vncviewer example the
 program is started asynchronously and no output is awaited.
+							    [id=patch]
+The following line is contained in DOS script  patch.bat  that contains some
+copy commands to patch a target system from the source code:
+
+    rem <url:./patch.bat?>
+
+This link enables you to execute the file directly from within Vim without
+taking the detour to the shell.  
 
 
 -----
-The vimscript scheme					*utl-exvs*
+Displaying and browsing HTML				*utl-displayHtml*
 
-The vimscript scheme is a nice example for a non standard protocol. Utl.vim
-introduces it in the hope it will be helpful and also as a demonstration for
-the URL concept. This URL definition is in full compliance to the URL/URI
-specification! Try the folowing examples: 
-
-    <URL:vimscript:ls>
-
-    1. <URL:vimscript:let g:utl_sav=g:colors_name>
-    2. <URL:vimscript:colors peachpuff>
-    3. <URL:vimscript:exe "colors ".g:utl_sav>
-
-    <URL:vimscript:help uganda>
-
-Here is an example which is derived from the minibufexpl.vim ( see
-http://www.vim.org/scripts/script.php?script_id=159 ). This file
-contains folds and the following hint:
-
-    Hint: Type zR if you don't know how to use folds
-
-Using UTL this could be turned into a hotlink:
-
-    Hint: Execute <URL:vimscript:normal zR> if you don't know how to use folds
-
-Execute the above URL to see how this works...and to see another example :-)
-
-Yet another vimscript example {{{
-This example is derived from the vimspell.vim, see <URL:http://www.vim.org/
-scripts/script.php?script_id=465>. This file contains the following:
-
-    " Section: Documentation 
-    "----------------------------
-    "
-    " Documentation should be available by ":help vimspell" command, once the
-    " script has been copied in your .vim/plugin directory.
-    "
-    " You still can read the documentation at the end of this file. Locate it by
-    " searching the "vimspell-contents" string (and set ft=help to have
-    " appropriate syntaxic coloration). 
-
-Using UTL this can be turned into a hotlinked version:
-
-    " Section: Documentation 
-    "----------------------------
-    "
-    " Documentation should be available by <url:vimhelp:vimspell> command, once the
-    " script has been copied in your .vim/plugin directory.
-    "
-    " You still can read the documentation at the end of this file, see 
-    " <url:#vimspell-contents> (and execute <URL:vimscript:set ft=help> to have
-    " appropriate syntaxic coloration). 
-
-}}} Execute <URL:vimscript:normal zM> to close the fold again
-
-Regarding the above examples you might agree with me that the possibility to
-embed vim commands and hotlinks in a document is nice and smart.
-
-Obviously there is one issue: As long as plain text URLs are not standard, the
-standard user who reads the above given samples in minibufexpl.vim or
-vimspell.vim would not be able to actually execute the URLs. But the plugin
-authors could utilize the URL version anyway since their meaning is obvious to
-the user. The user can execute still manually.
-
-Potentially vimscript URLs could also be of benefit for a community, for
-instance in the vim@vim.org mailing list where often vim commands are
-exchanged. Can be used at hot links for those people who can directly switch
-to vim while reading mail.
-
-A historical note: 
-The vimscript URL was inspired by the javascript scheme, which is supported by
-Mozilla/Firefox and MS Internet Explorer for example (try
-<URL:javascript:window.alert(%27hello, worldddd%27)> for a javascript
-example). Consider the current vimscript protocol support ( which is actually
-one line of code, see ../plugin/utl_scm.vim#r=vimscript ) as a demo. Much more
-sophisticated things could be achieved.
-
-
------
-The vimhelp scheme					*utl-exvimhelp*
-
-Linking to the Vim Help is especially useful. So Utl provides a a shorter form
-for that. Instead <URL:vimscript:help design-documented> you can write:
-
-    <URL:vimhelp:design-documented>
-
-using the special non standard protocol vimhelp. Obviously this is the same as
-the Vim-help reference notation |design-documented|. But with the advantage
-that the URL version also works if the file containing the link is not part of
-the Vim help! Another advantage is that you can use fragments in conjunction
-with vimhelp:
-
-    <URL:vimhelp:design-documented#line=4>.
-    
-That's 4 lines downwards from the position which the URL without the fragment
-yields. (Not 4 lines downwards from the top of the file which contains that
-help item.) This is useful for instance for documenting Vim scripts! See
-<URL:../plugin/utl.vim#vimhelp:expr-==> for an example. It could also be useful
-in the Vim mailing list when Utl.vim or plain text URLs become common enough.
-
-
------
-Mailto URLs
-
-Utl supports the mailto: protocol. Try for example to execute the following
-Links with \gu :
-
-    <URL:mailto:stb@bf-consulting.de>	# with embedding
-    mailto:stb@bf-consulting.de		# without embedding
-    stb@bf-consulting.de		# without embedding and mailto:
-
-Especially the latter form is useful for directly using email addresses. I
-keep my email addresses in my text based address book and often start writing
-emails from there. I do not maintain the address book of my mail client
-program.
-
-If your mail client supports extended mailto syntax according to RFC2368 you
-can also execute URLs like
-
-    <URL:mailto:stb@bf-consulting.de?Subject=mysubject&
-	Cc=bf@bf-consulting.de&
-	Bcc=stb2@t-email.de&>
-
-You might want use something like:
-
-    <URL:mailto:stb@bf-consulting.de?
-    To=hans.mueller@web.de&To=martin.schmidt@t-online.de&To=otto.andres@web.de>
-
-to directly mail to a group of people.
-
-
------
-Using a hot key
-
-Most people prefer to have a hot key to execute \gu. For instance you could
-use the function key F4 to execute an URL with the mapping:
-
-    :nmap <F4> <Leader>gu
-
-Or do you prefer the "real link" feeling and execute a hyperlink with double
-click left mouse button?
-
-    :nmap <2-LeftMouse> <Leader>gu
-								    id=vsex
-Execute <URL:vimscript:nmap %3c2-LeftMouse%3e %3cLeader%3egu> to try this
-mapping. Execute <URL:vimscript:nunmap %3c2-LeftMouse%3e> to unmap it again.
-
-
-
-4.3 Referencing Emails
-
-Referencing emails from within a text file can be very useful (see for
-example #r=emailex above). There is not yet a proper Utl solution, but some
-people (including me) find already useful what is currently possible.
-
------
-The desired solution?
-
-The desired solution, in my opinion, would be to have a specific scheme for
-referencing emails which reside in one of your mail folders, something like
-this:
-
-    <url:mbox:[filter expression to select one or more specific email]>
-    
-for instance:
-
-    <url:mbox:subject=abc>		# Display the thread related to subject abc
-    <url:mbox:date=20.12.2004+12:21>	# Specify a mail by date+time
-    <url:mbox:id=20001025234042.A29199@smith.com>
-					# Specify a mail by its message ID
-
-The latter would probably be the most important case: to identify an email by
-its unique message ID (RFC 822 header field "Message-ID:"). Unfortunately not
-every mail system supports the message ID, most notably Outlook consortes. For
-Outlook, even worse, until now I did not find any possibility to savely
-identify an email in a way which can be used for automated lookup. I tried for
-example to write a Windows Scripting Host (WSH) script, but it seems you
-cannot even identify an email by date/time received because you can only
-define filters for time ranges. Who can help here??? Perhaps can be solved
-using VBS.
-
------
-Experimental solution for mbox formatted mail boxes:
-
-For the mbox style mail box format with the Message-ID: header field present
-in the emails I work with the following experimental to handle my private
-emails. It uses a query URL like this:
-
-    <url:file:///home/stb/Mail/search?20001025234042.A29199@smith.com>
-
-It searches some mail folders for the email with the given Message-Id,
-extracts it, and displays it in a Vim window. The program `search' is little
-self written perl script (the Vim plugin <URL:http://www.vim.org/scripts/
-script.php?script_id=25> performs a similar task.) Using existing
-programming interfaces to access mail boxes would probably be a smarter
-approach.
-
------
-Referring to copies
-
-Here comes what I am doing over and over with my Outlook emails on the job. I
-save important emails with "Save as" in a project specific "correspondance"
-folder. Mostly in .rtf or .txt format. For the file name I prefix the date of
-the email, for instance '20041204 RE MDAC 2.6 installation problem.txt'. The
-link containing this reference looks something like:
-
-    <url:corr/20041220 RE MDAC 2.6 installation problem.rtf>
-
-The link appears for example in the bug tracker data base. Or in a text file
-which contains items for the next revision of a technical documentation.
-Compilation of requirements of a software engineering project is another
-example.
-
-Depite the annoying step of saving the email to a file (could probably be
-automated if I was a WSH or VBS programmer) this procedure proved to be very
-powerful during the last years.
->
-
-==============================================================================
-5. Tips, details, pitfalls				*utl-tipsdetails*
-
-
-5.1 Associated Base URL	and Cache Mapping		*utl-tdassbcachem*
-
------
-Associated Base URL					*utl-tdassb*
-
-Execute the link:
-
-    <URL:utl_ref.txt>
-
-and when you ARE in the other file, utl_ref.txt, then type the utl.vim
+Use Utl to display a HTML file/page that you are currently editing with the
 command:
 
-    \gs
+    :Utl openLink currentFile	    " or shorter:
+    :Utl ol cf
 
-that shows you the associated base URL in Vim's message line.
-It looks something like:
+This will open the HTML file in your web browser (possibly after dynamic
+request for configuration). Utl.vim also supports for browsing of HTML source
+code, see|utl-efmeddep|.
 
-    URL=file:///path/to/.vim/doc/utl_ref.txt
+==============================================================================
+5. Usage Patterns					*utl-usagePatterns*
 
-This is the base URL, denoting the context for resolving relative URLs.
-If \gs shows you a message which starts with `no associated URL', this means
-that the buffer was not invoked by utl.vim, e.g. was invoked by a user
-command like :e xyz.
+Here are some usage pattern for URLs in plain text. Although they do not exclude
+each other and will often appear all together, they sketch different use
+focuses. I worked the patterns out in the hope they are helpful in exploring
+plain text URLs.
 
-You normally do not need the \gs command. But it is sometimes useful to figure
-out what's going on.
+5.1 Use Vim as Desktop application			*utl-usedesktop*
+
+If you use your text editor not only in a defensive manner (to edit program
+source code what you are engaged for since you are a programmer) but
+also unsolicited because you recognized that a text editor is an excellent
+desktop tool then you might consider to read explore this section.
+
+5.1.1 Project Management				*utl-projectManagement*
+
+This pattern is about compiling lots of different informations and making them
+available at your fingertips. Characteristics are:
+- The information changes frequently
+- Many different schemes and media types involved
+The compiled information might consist of:
+- references to important email threads
+- web links
+- links to resources (project drives, document management system links)
+- links to downloaded documents
+- references into bug tracker database
+
+Example (the #-comments are only for clarification and not in the real file):
+
+    --- install_project.txt -----------{
+    file: poland_project.txt - Poland Install Project
+    hist: 14.07.08/Stb
+
+			# Link to architecture working document
+    <url:../i/rcinstall_arch.txt>
+
+			# Link to installation instructions
+    <url:../../data/PL Installation Procedure - IMS Installation.doc>
+
+    <url:cr.txt>	# Link to change requests notes
+    <url:versions.txt>	# Link to SCM related stuff
+    <url:t.txt>		# Link to test reports
+    <url:t.txt#r=act>	# ... direct link to current test there
+
+		        # Link to project root in document management system
+    <url:http://kstbx032.ww010.mycompany.net/livelink/livelink.exe?func=ll&
+    objId=1007014&objAction=browse&sort=name>			    [id=lu]
+
+    Iinstall:		# Link to a specific document there
+    <url:http://kstbx032.ww010.mycompany.net/livelink/livelink.exe/RC_D_
+INSTALLATION_COMPONENT_IF_SPEC.doc?func=doc.Fetch&nodeId=1017472&
+    docTitle=RC_D_INSTALLATION_COMPONENT_IF_SPEC%2Edoc&vernum=1>
+
+			# Hot link to the current installation CD
+    <url:vimscript:!net use w: %5c%5c56.123.11.73%5cc$ myAdminPassword /user:administrator>
+    <url://56.123.11.73/infrastructure/installation/poland/CD>
+    
+
+    Configuration files for all deployment sites 
+      <url:mail:///Inbox?14.07.2008 20:40>
+      = <url:../../data/sd/20080219_all_siteconfigs>  # I use the = notation
+			# for attachments or references contained in an
+			# email, which data I saved locally
+
+    Info about the CGW Tool
+      <url:mail:///Inbox16.06.2008 11:21>
+
+    Release of installer version 3.13.1.14
+      ! Contained in application version 35.106, 35.107
+      <url:mail:///Inbox?13.03.2008>	    Announcement Mail
+      <url://d:/plInst/ws_3_13_1_14>	    Link to source code copy
+      Solved issues: PT97084, PT97411, PT97460 (partly), PT97957
+
+    Patching of integration test system
+			# See <url:#r=patch> for explanation
+      <url:./tools/patch.bat#>
+
+			# Reference to bug tracker issue.
+			# See |utl-btSample|
+    BT4711
+	<url:mail:///Sent Items?21.07.2008 22:03>
+
+    BT4712
+	Analysis of issue: <...>
+	<url:mail:///Inbox?21.07.2008 10:23>	As discussed with Rob
+	
+    
+    -----------------------------------}
+
+
+5.1.2 Collecting and organizing ideas			*utl-useOrganizeIdeas*
+
+Keywords for this section are:
+Hypertext, Personal Wiki, NOtes, Mind Map, Writing in outlines.
+
+With (executable) URLs you can build up hypertext (as you know from the
+Web/HTML - where the H stands for hypertext and the implementation of that is
+URLs). Here I mean self written hypertext, pieces of text that you write and
+which you want to interlink because those pieces are associated somehow.
+
+An example is software development. When you start thinking of some software
+to be developed you may write down the thoughts, ideas, known requirements
+etc. down to a piece of paper. Or you write it in a text file using your
+favorite Vim editor because with this media you can rearrange, modify and
+search the text...and because you can interlink portions of the text.
+
+Utl.vim helps you with interlinking and associating. Especially fragment
+addressing |utl-tutfrags| and also reference style links |utl-tutfoot| are
+helpful in this context.
+
+Personal Wikis [42] also serve this usage pattern. Contrary to (some of) them,
+Utl.vim does not offer any text formatting (and conversion to HTML etc) - Utl
+is just URL. Vims folding can also help a lot in organizing your ideas.
+
+Collecting and organizing notes is quite related, so it might be ok to
+subordinate within this section. Example is a personal info file.
+You might maintain a file that contains for instance:
+- Installation instructions of tools (e.g. what to modify after you installed
+  a new Vim version)
+- Usage of tools they use, for instance CVS usage and commands
+- Links to network drives, resources and documentation
+- Web links (instead or additional to bookmarks/favorites in web browser)
+- HOWTO information (for instance collection of important cvs commands)
+All these informations are much more useful if enriched with URLs.
+
+
+5.1.3 Information Directory      			*utl-infoDir*
+
+Keywords for this section are:
+Index File, Bookmarking.
+
+A common desktop use of Utl is to maintain a file directory of your important
+files. This tends to be most helpful for files that you need less frequently
+so that you don't remember their locations. Furthermore, the ability to add
+comments can help to figure out in which file certain information resides.
+Some people also use this technique to switch between files, but for this
+purpose there might be better ways (like self written tag files, session
+files, buffer explorer etc). The Information Directory rather contains static
+information.
+
+Example (the #-comments are only for clarification and not in the real file):
+
+    --- directory.txt -----------------{
+    ./apps			# NOtes related to different application areas
+      ./apps/tex_app.txt
+      ./apps/sys_app.txt
+      ./apps/lpr_app.txt	(Unix an Windows)	# Printers
+
+    ./p
+      ./p/invoices
+      ./p/privat/
+	  ./p/privat/books_db.xml   Private and bf!
+	  ./p/privat/running.txt    # sports
+	  ./p/privat/st/
+	      ./p/privat/st/st07.txt
+	      ./p/privat/st/st08.txt
+      ./p/data/cal_2008.txt
+      ./p/org/tk_ow10/
+      ./p/org/tk_ow10/tk.txt
+      ./p/spendings.txt
+				# correspondence
+      ./p/corr/			.tex letters
+	./p/corr/carla.txt
+	./p/corr/alice.txt	
+	./p/corr/notes.txt#r=akt
+
+      ./p/adb/
+        ./p/adb/stb_adb.xml	# address book
+				Include xy-spendings!
+      ./sd
+        ./sd/index.txt		# link to another index file
+    -----------------------------------}
+
+Go to the line of the file you want to open and type :Utl . NOte that this
+also works if the cursor is on the whitespace before a file.
+
+A related usage is to maintain web bookmarks not in a web browser but,
+in a text file. This might be more portable, or quicker than click click
+in your web browser. Example:
+
+    --- bookmarks.txt -----------------{
+    http://www.vim.org				Vim Page
+    http://maps.google.de/			Google
+    http://de.wikipedia.org/wiki/Hauptseite	Wikipedia
+    http://dict.leo.org/?lang=de&lp=ende	Dictionary
+    -----------------------------------}
+
+Of course you should create some shortcut to the bookmarks.txt file, e.g.
+create a tag, a mapping or an URL linking to it
+    
+
+
+5.2 Link and comment source code			*utl-useSourceCode*
+
+This is a usage of big potential IMHO. But as Utl is currently only
+implemented for the Vim Editor this usage might be of real benefit only for
+people who have an own interest in quality source code. You can use Utl to:
+
+- link between the source code files using fragment addressing. For
+  instance point to a C/C++ header file where a structure/class is defined.
+
+- link from a source code file to Man pages using the man: scheme (Unix only).
+  For an example see [35].
+
+- reference design documents, technical specification papers, illustrating
+  pictures etc from within source code.
+
+The Utl source code uses URLs itself, search in <url:../plugin/utl.vim>
+for 'url:'
+
+
+==============================================================================
+6. Tips, details, pitfalls				*utl-tipsdetails*
+
+-----
+Using a hot key						*utl-hotKey*
+
+Mappings to shorten :Utl commands have already been explained, see
+[29] / <url:../plugin/utl.vim#r=suggested_mappings_visual>. Using a hot key is
+even shorter and gives perhaps more "hypertext feeling". Examples:
+
+    :nmap <F4> :Utl ol<cr>
+
+Or still more radical with double click?:
+
+    :nmap <2-LeftMouse> :Utl ol<cr>
 
 
 -----
-The `file:' protocol is the default			*utl-tdfileisdef*
+Writing correct URLs					*utl-writeUrls*
 
-When \gs shows `URL= ' (empty value) you nevertheless can execute relative
-URLs. Given a relative URL, say utl_ref.txt, utl.vim just assumes the
-`file:' protocol, i.e. file:///path/to/currentBuffer.
-
-This behaviour normally gets the thing started: you are in a normal Vim
-session and encounter a link somewhere. Just type \gu to follow the link.
-
-This behaviour to "urlify" the current resource is usual for systems that
-support both, URL oriented and file system oriented resources. For example
-Linux/KDE's web and file browser konqueror. For the konqueror the http:
-protocol is the default.
-
-
------
-Cache Mapping						*utl-tdcachemap*
-
-Type now the utl.vim command:
-
-    \gc
-
-Utl.vim shows you it's internal cache-mapping: The mapping between local
-files and their URL. That grows up more and more when you continue to
-follow links to different URLs. At the moment \gc, like the \gs command, is
-mainly useful to see whats going on when learning utl.vim. The cache map is
-always looked up first when utl.vim needs a base URL. URLs that are passed
-directly to the web browser or to the mail client are an exception. They are
-passed to these applications before lookup and will not be visible in the
-cache map.
-
-When working with local files, the URL may seem quite academic. But with
-remote resources this changes[#r=foot4].
-
-
-5.2 Writing correct URLs				*utl-tdwriteurls*
-
-As already mentioned, understanding URLs is essential for using utl.vim as
-an _author_. Using utl.vim for the _reader_ who only executes URLs requires
-not much understanding; you just hit \gu when you encounter a link. That's a
-difference between authoring/editing/writing on one side and
-reading/browsing/viewing on the other side.
-
-Have you already read the URI primer |utl-uriprim|? Strongly recommended!
-OK, enough moralizing. Here are some rules and hints:
-
-- Always use forward slashes!				*utl-usefwslashes*
+- Pittfall: Don't use backslashes
 
   Even on MS Windows do not write:
 
@@ -991,147 +1490,86 @@ OK, enough moralizing. Here are some rules and hints:
 
       <url:file://D:/htdocs/corephp/kalender/WebCalendar/index.php> # good!
 
-  Note that the windows drive appears where you normally expect a machine
-  name. That is according to URI specifications. Try it out from within your
-  web browser if you do not believe it!
-
-							*utl-userels*
-- Use relative URLs instead of absolute URLs whenever possible. For example,
-  use:
+- Tip: Use relative URLs instead of absolute URLs whenever possible. For
+  example, use:
 
       <url:sub_dir/foo.txt> or
       <url:./sub_dir/foo.txt>	# same as previous line
 
   instead of:
 
-      <URL:file:/full/path/to/sub_dir/foo.txt>
+      <url:file:/full/path/to/sub_dir/foo.txt>
 
   Other example with file which is in a directory with is parallel to the
   directory where the current file is in:
 
-      <URL:../sibbling_dir/foo.txt>
+      <url:../sibbling_dir/foo.txt>
 
-  Normally there is no need for an explicit `file:' protocol!
-
-
-- How relative URLs are combined			*utl-howrelscombine*
-
-  Say you have a file foo.txt which lives in the directory /full/path/to .
-  Thus the full pathname of foo.txt is:
-
-      /full/path/to/foo.txt
-
-  Further assume foo.txt contains an URL:
-
-      [foo.txt]
-      .
-      .
-      <URL:sub_dir/bar.txt>
-      .
-      .
-      EOF
-
-  When this URL is executed by utl.vim, the following happens:
-
-  - The URL "sub_dir/bar.txt" is recognized as a relative URL (because it does
-    not contain a protocol).
-
-  - Every relative URL has to be transformed into an absolute URL. This is
-    achieved by combining it with the base URL. The base URL is the URL of the
-    containing document minus its file name. In our case:
-
-	"file:///full/path/to/"
-
-    (When foo.txt itself was retrieved through, say, the scp: protocol,
-    then the base URL might read something like "scp://host.de/.../". 
-    Utl.vim's \gs command shows you the absolute URL of the current
-    document.
-
-      absolute URL of file
-      containing the URL:	    file:///full/path/to/foo.txt
-    - file component:		    foo.txt
-    --------------------------------------------------------------------
-    = base URL:			    file:///full/path/to/
-    + relative URL:		    sub_dir/bar.txt
-    --------------------------------------------------------------------
-    = absolute URL:		    file:///full/path/to/sub_dir/bar.txt
-
-  It's always an absolute URL which is executed by utl.vim. Relative
-  URLs are never executed directly! They are transformed into absolute
-  URLs in order to get executed.
-
-
-5.3 Common Pitfalls					*utl-commonpitfalls*
 
 -----
-Absolute URLs do not combine!!!!!!			*utl-absdontcombine*
+Pitfall: Absolute URLs do not combine!			*utl-absDontCombine*
 
 The following makes no sense:
 
-  <URL:file:../do/not/do/this>	    # VERY BAD
+    <url:file:../do/not/do/this>	    # VERY BAD
 
-Here is the easy rule to keep in mind: When the protocol -- `file:' in our
-case -- is present, then it's an absolute URL! If it is absent, then it is a
-relative URL. Be aware of this rule... although bad URLs as the above one
-might seduce you :-)
+Here is the easy rule to keep in mind: If the protocol (`file:' in this case)
+is present, then it's an absolute URL! If it is absent, then it is a relative
+URL.
 
-An absolute URL is taken as it is! The ../ in the example suggests a
-relative path. But since the URL is absolute, the path will _not_ be
-combined with the path of the document containing that URL. Executing this
-link is about the same as when you type the Vim command:
+An absolute URL is taken as is! The ../ in the example suggests a relative
+path. But since the URL is absolute, the path will _not_ be combined with the
+path of the document containing that URL. Executing the link above is about
+the same as typing the Vim command:
 
-  :edit ../do/not/do/this
+    :edit ../do/not/do/this
 
-That means: the result depends on the current directory, not on
-the directory of the file containing the URL. Not what you want!
+That means: the result depends on the current directory, not on the directory
+of the file containing the URL. Not what you want!
 
-The moral of the story is:
-1. When you use a protocol like file: or http: in your URL, then you have
-   to give the complete path in the URL!
-2. Use relative URLs whenever possible!
 
 -----
-Protocol and file type are different things		*utl-protvsftype*
+Pitfall: Protocol and file type are different things	*utl-protvsftype*
 
-This is something which is important to understand, especially if you are
-going to extend Utl by your owne protocol and media type handlers.
+This is really important to understand, especially if you are going to extend
+Utl by your own protocol and media type handlers. People tend to create
+a protocol where a media type is the better choice.
 
-Linking to a HTML file does not mean that you necessarily need the http:
-protocol then! Protocol and file type (= media type) of the link target are
-completely independent.
+Example: Linking to a HTML file does not mean that you necessarily need the
+http: protocol then! Protocol and file type (= media type) of the link target
+are completely independent.
 
-You can have http: to retrieve a txt file:
+You can have `http:' to retrieve a txt file:
 
-  <URL:http://www.ietf.org/rfc/rfc2396.txt>
+    <url:http://www.ietf.org/rfc/rfc2396.txt>
 
-Or you can have file: to retrieve a (normally, but not necessarily local) HTML
-file:
+Or you can have `file:' to link to a local HTML file:
 
-  <URL:file:///usr/local/apache/htdocs/index.html>
+    <url:file:///usr/local/apache/htdocs/index.html>
 
-This second example is more important for normal utl.vim usage: for
-example, when using utl.vim for editing your website. Utl.vim can
-directly execute links in HTML files and it normally does that by implicitly
-using the `file:' protocol. See also |utl-footnote-htmledit| and
-|utl-tutmeddep|.
+Utl.vim knows scheme handlers (implemented in ../plugin/utl_scm.vim, 
+function Utl_AddressScheme_<scheme>) and media type handlers (variables
+utl_cfg_hdl_mt_<media-type>). First the scheme handler is performed
+(download), then the media type handler (display).
 
+							*utl-efmeddep*
+-----
+Detail: Embedding and fragment interpretation depend on media-type
 
-							*utl-tdmeddep*
-5.4 Embedding and fragment interpretation depend on the media-type
-
-As you already know, Utl introduces the embedding `<URL:myUrl>' for plain
-text files. For HTML files (.html or .htm), it makes sense to support HTML's
-embedding, i.e. something like `<A HREF="myUrl">'. This means that when you
-are editing a HTML file and execute \gu to follow a link, utl.vim expects the
-pattern `<A HREF...>' under the cursor.
+As you already know, Utl introduces the embedding `<url:myUrl>' for plain text
+files. For HTML files (.html or .htm), it makes sense to support HTMLs
+embedding, i.e. something like `<A HREF="myUrl">'. This means that when
+editing a HTML file and executing  :Utl  to follow a link, utl.vim expects the
+pattern `<A HREF...>' under the cursor. This can be useful if editing and
+browsing local html files "under construction".
 
 The URL embedding syntax relates to the media type of the source of the link.
 The fragment expression syntax relates to the media type of the target of the
 link. The semantics of the fragment expression depends on the media-type.
 
-When the target is a HTML file, with an IdRef expression like `#myFrag' then
+If the target is a HTML file, with an IdRef expression like `#myFrag' then
 Utl finds the position `<A NAME="myFrag">' (it will not parse the HTML file
-though, merely search it; but in practice it functions as expected).  When
+though, merely search it; but in practice this works as expected).  When
 the target is any other file type (utl.vim only distinguishes HTML from all
 others) then Utl finds the position of `id=myFrag' (case never matters).
 
@@ -1143,234 +1581,614 @@ type (= media-type) in utl.vim.
 
 
 ==============================================================================
-6. Setup and Customization				*utl-customization*
+7. Configuration and Options				*utl-config*
 
-Setup of web browser, mail client, media type handlers etc is triggered
-dynamically by Utl.vim when first requested. All settings are in the file
-<URL:../plugin/utl_rc.vim>. Refer to the explanations in the header of this
-file. The design goal was to make getting started with Utl easy.
+All configuration and customization is done via global Vim variables.
 
-Besides these setup items there is one pure customization item. You can switch
-off Utl's syntax highlighting of URL with the following setting in your vimrc
-file:
+You need not do anything in advance since missing configuration variables are
+detected dynamically. Utl.vim will present you the file <url:../plugin/utl_rc.
+vim> that contains template variables along with some help. You can just add
+or uncomment variables there and activate the changes per ":so %".
+More conventionally the variables can also reside in your vimrc file. Utl.vim
+will take care to not overwrite changes done in utl_rc.vim when updating to a
+newer version. The utl_rc.vim file approach has been chosen to make getting
+started with Utl.vim as easy and painless as possible.
 
-    let g:utl_config_highl = 'off'
-    " values: 'on', 'off'. Variable undefined is the same as 'on'
+It is recommended to enclose all variables in utl_rc.vim in "if !exits(var)"
+blocks. This way you can easily take any variables over into your vimrc file
+without adapting utl_rc.vim.
+
+-----
+Config Variables					*utl-configcfg*
+
+All configuration variables are named utl_cfg_*. Type: >
+
+    :let utl_cfg_<CTRL-D>
+
+to see all config variables. As stated you need not to know the individual
+variables because they are demanded dynamically.
+
+-----
+Option Variables					*utl-configopt*
+
+Besides config there are two option variables:
+
+							*utl-opt_verbose*
+Verbose mode on/off >
+
+    :let g:utl_opt_verbose=0/1		    " 0=no (default), 1=yes
+. 
+							*utl-opt_hlighturls*
+Verbose mode on/off >
+
+    :let g:utl_opt_highlight_urls='yes'/'no'  " 'yes' is default
+
+There is no option to customize the highlighting colors. But the source code
+<url:../plugin/utl.vim#highl_custom> gives some samples you might want to try.
+
+-----
+Internal and External Utl variables			*utl-configIntExt*
+
+Type >
+
+    :let utl_<CTRL-D>
+
+to see all variables Utl.vim uses. Variables which have a double underscore
+in their name (like in utl_cfg_hdl_scm_http__wget), are internal to Utl and
+should not be changed. All other variables you can change, even those that
+might be predefined by Utl.vim (like utl_cfg_hdl_mt_generic under Windows).
 
 
 ==============================================================================
-7. Changes from Utl-1.2 (Thlnk-1.2)			*utl-changes*
+8. Changes since Utl-2.0              			*utl-changes*
+
+OVERVIEW						*Utl-chgOverview*
+
+The most important changes are:
+
+- Added generic media type handler: open .pdf, .doc,	|utl-chgNewGenMTHdl|
+  .jpg etc without the need to define handler variables.
+- Added support for footnote references: make "[1]"	|utl-chgAddFootRefs|
+  executable.
+- Added scheme to open emails, e.g.			|utl-chgNewMailScheme|
+  <mail:///Inbox?26.07.2008 16:01>
+- Added verbose mode: Better figure out what's going    |utl-chgNewVerbose|
+- Added 'copy link/filename to clipboard' function	|utl-chgNewOperators|
+- Changed user interface: Basic Command :Utl instead	|utl-chgUI|
+  only mapping \gu
+- Alternate http access method: open web documents	|utl-chgNewHttpAccess|
+  directly in Vim
+- Support network files (shares, NFS), e.g.		|utl-chgNetworkFile|
+  <file://127.0.0.1/path/to/file>
+- Improved jumping back and forth			|utl-fixedBackForth|
+- More versatile scheme handler interface		|utl-chgcfgscm|
+- Fixed Bugs
+
+Following the changes in detail.
+
+INCOMPATIBLE CHANGES					*utl-chgincompat*
+
+-----
+All mappings \gu, \gE,... gone				*utl-chgUI*
+It is a design goal of Utl.vim to have no side effects and to stay out
+of the way. A mapping could clash with the mappings of other plugins.
+Therefor mappings are no longer the standard user interface to Utl.vim;
+new user interface is the command :Utl , see |utl-tutUI|.
+
+See <url:../plugin/utl.vim#r=suggested_mappings> to define the 
+mappings to :Utl commands to the get the behavior of Utl v2.0.
+
+-----
+Changed variable names					*utl-chgVarNames*
+
+The naming scheme has been changed for a clearer scheme. All configuration
+(=setup) oriented variables are now named utl_cfg_... , for instance 
+utl_cfg_hdl_mt_application_msword. All option oriented variables are now
+named utl_opt_, for instance utl_opt_verbose. All internal variables internal
+to Utl.vim have two underscores in the name. See |utl-customization|
+During installation you are guided to renaming the variables. You can check
+with <url:vimscript:call Utl_finish_installation()> if there are still old
+variables around.
+
+-----
+Command :Gu gone					*utl-chgGuGone*
+
+Instead
+    :Gu <url> <displayMode>
+you have now to use
+    :Utl openLink <url> <displayMode>
+
+-----
+Change in SCM Handler Interface				*utl-chgScmIf*
+
+The scheme handler functions in <url:../plugin/utl_scm.vim> have got
+an extra argument 'dispMode'. So in case you created or changed an
+existing scheme you have to adapt this. It's normally sufficient to
+add the argument to the function, e.g.
+
+    Utl_AddressScheme_file(auri, fragment)
+    --->
+    Utl_AddressScheme_file(auri, fragment, dispMode)
+
+-----
+URL lookup table disabled, commands \gs, \gc gone	*utl-chgCacheGone*
+
+V2.0 maintained a lookup table for URLs that mapped local files into URLs.
+This allowed to resolve relative URLs within web pages. But the design had
+conceptual problems, especially in conjunction with new footnote references
+|utl-totfoot| [41]. Since not of big practical relevanve I decided to disable
+the lookup table. This means that only relative URLs file:// URLs can be
+resolved, e.g. ./some_file.txt -> file://path/to/file.txt. As a consequence
+the commands \gs, \gc are gone as well as the file utl_arr.vim which
+implemented an associative array (a data structure that was not available
+in Vim 6).
+
+
+CHANGED							*utl-chgchanged*
+
+-----
+More versatile scheme handler interface			*utl_chgcfgscm*
+
+Utl 2.0 used the two variables utl_cfg_app_browser, utl_cfg_app_mailer,
+which have been used to parametrize the http- and mailto- scheme handler.
+This pragmatic approach has been replaced by a more consistent and
+systematic interface. The above two have been renamed:
+
+    utl_cfg_app_browser -> utl_cfg_hdl_scm_http
+    utl_cfg_app_mailer  -> utl_cfg_hdl_scm_mailto
+
+which clearly associates each variable with its scheme. New variables
+
+    utl_cfg_hdl_scm_mail	# new for new mail: scheme
+    utl_cfg_hdl_scm_scp		# now scp: scheme parametrizable
+
+have been added. Not all supported schemes are yet parametrized though.
+
+The interface is specified at <url:../plugin/utl_scm.vim#r=spec_ihsv>
+
+-----
+Minor: Changed syntax highlighting of URLs		*utl-chghighl*
+
+The URL surroundings `<url' and '>' no longer highlighted, only the URL
+itself.
+
+    You can change the highlighting of the URL surrounding and the URL
+    itself in the source:
+	<url:../plugin/utl.vim#highl_surround>
+	<url:../plugin/utl.vim#highl_inside>
+    Some commented out samples are given there. (Do not forget to write down
+    the changes you made in order to prevent overwriting when you install
+    a new Utl.vim version.)
+
+
+
+ADDED							*utl-chgadded*
+
+-----
+New generic media type handler for any media type	*utl-chgNewGenMTHdl*
+
+In v2.0 for each media type an individual media type handler variable had to
+be defined. Added a generic media type handler which will be called if no
+specific media type handler is defined. See |utl-tutmtypes|.
+
+-----
+Added support for footnote references			*utl-chgAddFootRefs*
+
+In given texts you often find references like:
+
+    ----- (Example taken from <url:vimhelp:beos-timeout>)
+    "Because some POSIX/UNIX features are still missing[1], there is no
+     direct OS support [...]"
+    .
+    .
+    [1]: there is no select() on file descriptors; also the termios VMIN [...]
+    -----
+
+These can be executed using Utl.vim. See |utl-tutfoot|.
 
 
 -----
-Incompatible Changes					*utl-chgincompat*
+New operators on URLs					*utl-chgNewOperators*
 
-- #tn= fragment is now default, i.e. #tn=foo is same as #foo
-
-  Previously the ID-reference fragment #r=foo was the default. If you have
-  used the naked fragment with the previous version you might want to convert
-  your links. Use the search pattern  /<URL:.*#[^=>]*>	to find the links
-  which need to be converted (the pattern works within Vim as well as with the
-  grep program) and change  #  --into-->  #r= . If I receive more than five
-  complains I will supply a converting utility :-)
-
-  The reason for this change was that #tn= semantics is used more often by
-  most users.
+- copyLink     - copy link to clipboard, see |utl-tutCopyLink|
+- copyFileName - copy filename corresponding to clipboard, see |utl-tutCopyFileName|
 
 -----
-Changed							*utl-chgchanged*
+New URL operand						*utl-chgNewOperand*
 
-- Create documents on non existent local URLs (Wiki support).
-  No longer complain. Perhaps this should be customizable. For a set of
-  read-only documents complaining mighgt be better.
-
-- On http URLs no longer use the wget utility for retrieving files on the web.
-  Instead delegate to your web browser.
+- currentFile  - Operates on the current file, i.e. creates an URL from the
+  current file and use it as the URL to be operated on (instead the URL under
+  the cursor (operand underCursor) or an URL typed in at the command line
+  (operand = the typed URL).
 
 -----
-Added							*utl-chgadded*
+New mail scheme						*utl-chgNewMailScheme*
 
-- Call web browser on http URLs and email client on mailto URLs (configurable
-  scheme handlers)
-
-- Call MS-Word on .doc files, Acrobat Reader on .pdf, IrfanView on .jpg etc.
-  (configurable media type handlers)
-
-- Syntax highlighting for URLs (can be switched off)
-
-- Support URL heuristics, e.g. allow www.vim.org, not only http://www.vim.org
-
-- Support exeuction of URLs without <URL:...> embedding (e.g. execute URLs as they
-  mostly appear in not specifically written text like "see www.vim.org for Vim plugin"
-
-- Support multiline URLs
-
-- Smart setup and customization facility 
-
-- Tilde Support, e.g. allow <URL:~/foo/bar> and <URL:~user/foo/bar>
-
-- Automatically open file in split window if current buffer cannot be
-  abandonned (e.g. is not written) 
+Introduced a non standard scheme for referencing emails from your local mail
+boxes via URL. Example: <url:mail:///Inbox?date=12.04.2008 15:04>. Currently
+the only implementation for actually displaying the emails if for MS Outlook.
+See |utl-tutscmmail|.
 
 -----
-Fixed							*utl-fixed*
+New verbose mode					*utl-chgNewVerbose*
 
-- Yes, about 10 bugs... but probably more new bugs came in :-)
+Set Vim variable
+    :let utl_opt_verbose=1
+to see what's going on when executing an URL. See |utl-tutverbosemode|.
+
+-----
+							*utl-chgFragAW*
+Support fragment addressing for Acrobat Reader and MS Word  
+
+If you use Acrobat Reader you can execute an URL like:
+<url:http://www.tech-invite.com/RFCs/PDF/RFC3986.pdf#page=4>. See
+|utl-tutpdffrag|.
+If you are under Windows and use MS Word you can execute an URL like:
+<url:my.doc#tn=textToSearch>. See |utl-tutwordfrag|.
+
+-----
+New HTTP-URL access method				*utl-chgNewHttpAccess*
+
+Two standard methods are provided for accessing http URLs:
+- Delegation to your internet browser and 
+- Display inside Vim (using the non-interactive retriever "wget")
+
+(1.) was the only method in Utl-V2.0, where (2.) was the only
+method in Utl-v1.x
+Now the one or the other method can be used, choosing it URL by URL.
+See |utl-tutscmhttp| 
+
+-----
+Support network files (Shares, UNC, NFS)		*utl-chgNetworkFile*
+
+You can now access Windows share files like
+    <URL://127.0.0.1/ADMIN$/System32/EULA.txt>
+or Unix shares (e.g. NFS) like
+    <URL://server/sharefolder/path/to/file.txt>
+See |utl-tutdrivesshares|.
+
+
+-----
+							*utl-chgNewFragConv*
+Support %f fragment conversion specifier in media type handlers
+
+New fragment conversion specifier %f allowed in media type variables. For
+external media type handlers fragments can now be passed to the handler.
+This enables URLs like the these to be performed:
+
+    <url:./path/to/file.pdf#page=3>
+    <url:./path/to/myWordDocument.doc#searchText>
+    <url:./path/to/websources/mypage.html#htmlAnchor>
+
+-----
+Support negative numbers in #line= fragments.		*utl-chgLineNegative*
+
+#line=-3 positions cursor three lines upwards. Starting either from bottom of
+buffer or, if relative addressing (see |utl-tutfragsrel|) from current cursor
+position.
+
+
+FIXED BUGS						*utl-fixed*
+
+-----
+Allow single quotes in URLs
+
+Example: The URL <url:vimhelp:'compatible'> did not work because single quotes
+where use for quoting inside Utl.vim.
+
+-----
+Fixed fragment quirks
+
+- In certain cases (involving for instance files already displayed in buffer
+  or Vimhelp URL) the wrong cursor position was set.
+
+- More clear when relative fragment addressing happens.
+  This depended on whether file was already displayed or was displayed by the
+  scheme handler. Now only for same-document references |utl-tutfragsdref| or
+  for non file oriented fragment addressing |utl-tutfragsnonfile|. 
+
+-----
+Jump forth and back with ctrl-o/-i improved		*utl-fixedBackForth*
+
+Jumping back from link target to link source with ctrl-o should be more
+reliable now (added explicit context marks before certain cursor changes).
+
+-----
+Fixed visual area off by one error (Windows)
+
+Under Windows when visually selecting an URL the character following the
+visual area was taken into the URL.
+
+-----
+Fixed bug with media type to variable name mapping
+
+Media types can contain characters . + - which must not be mapped directly
+into variables. Now convert all . + - all into underscores. Example:
+Variable for video/x-msvideo is utl_cfg_hdl_mt_video_x-msvideo.
+
 
 
 ==============================================================================
-8. Todo list						*utl-todo*
+9. Todo     						*utl-todo*
 
 -----
-Todo list
+Wish list
 
-Please let me know which feature you would like to see in the next release.
-
-- Support for URL creation (authoring support)
-  See #foot6 for an approach.
-
-- Dynamic call of handlers.
-  There should be a possibility to choose media type and scheme handlers
-  dynamically. This is most useful perhaps for links to local directories,
-  i.e. URLs like <URL:../doc>: one time you want to call Vim's own file
-  explorer, one time the file explorer of the system (e.g. Windows Explorer),
-  one time the shell (or DOS box on Windows) with proper cwd. Currently you
-  have to always invoke the setup <URL:config:#r=mt_dir> and change it.
-
-- Allow wget to retrieve http documents.
-  There should be a possibility to handle http URLs in Vim (using the wget
-  utility) as version 1.2 offered it. Currently http URLs are always delegated
-  to an external program (normally your web browser). The issue probably
-  depends on the previous one.
-
-- Make colors of URL syntax highlighting configurable.
+- Better support for URL creation (authoring support)
 
 - Check for dangling links
-  There should be a function to check whether all links points to existing
-  targets. Actually I already have a hack solution. Please email if you think
-  this would be a nice feature.
+  Provide a function to check whether all links point to existing targets.
 
 - Follow links when searching.
   Add a function which searches the file tree which is defined by a file
   containing file URLs.
 
 -----
-Known bugs						*utl-knownbugs*
+Known major bugs					*utl-knownbugs*
 
-- The mappings \gE, \gV which split the screen when executing an URL
-  are not respected for a reference to the same document; e.g. executing
-  \gV on <URL:#tn=this> doesn't split the screen. The same is true
-  when the file is the current file: e.g. <URL:utl_usr.txt#tn=this>.
+- Not compliant to newer URI specification [RFC3986], rather to obsoleted
+  [RFC2396]. 
 
-- Highlighting Bug
-  The syntax highlighting gets confused in case of a split window, both
-  containing the same file with URLs. Perhaps a Vim bug.
+- Found fragment string of #somestring will not be the current search string.
+  See <url:#tp=The found string>
+
+- Jump to wrong target if URL is substring of current file.
+  Have displayed a file /tmp/s.txt, which contains a folder URL <url:/tmp>.
+  Executing it will display the folder /tmp but rather jump to line 1
+  of current file /tmp/s.txt. Reason is that Vim function bufwinnr() is used
+  to check if to be loaded file (i.e. folder /tmp) is already loaded.
+  Bufwinnr takes file-patterns as arguments not full names. /tmp is a match
+  for /tmp/s.txt. Utl.vim thinks the target is already displayed and just
+  positions the cursor (to line 1).
+
+- Exclamation mark in externally handled URLs to be escaped.
+  In URLs that contain URLs like
+  <URL:http://server.foo.com:9010/bugtracker/secure/CreateIssue!default.jspa>
+  the exclamation point  !  will be expanded by Vim on the command line of the
+  invoked shell. Utl.vim should escape the !, but is doesn't, so you have to 
+  workaround yourself. Insert two \\ before the !, e.g.
+  <URL:http://server.foo.com:9010/bugtracker/secure/CreateIssue\\!default.jspa>
+  See <vimhelp::!#Any>. NOte that actually a double backslash is needed since
+  Utl.vim consumes one for itself before Vims :! is invoked... probably
+  another bug.
+
+- Utl copylink does not percent encode invalid URI characters.
+  For a link containing blanks (under Windows) like
+  <url://c:/tmp/file name with blanks.txt> the command  :Utl copylink
+  yields the URL <url:file://c:/tmp/file name with blanks.txt>. Although
+  this URL can be executed within Utl itself or can be used in Windows
+  Explorer etc. it is not a valid URL since the space character is not in the
+  URI character set (see <[RFC3986]#tn=^2.  Characters>). Utl.vim should
+  percent encode the space: <url:file://c:/tmp/file%20name%20with%20blanks.txt>.
+  Other characters than space have similar problems (also under Unix).
+  The invalid URLs is really a problem when you try to open the URL with
+  :Utl ol file://c:/tmp/file name with blanks.txt  (in other Vim instance as
+  described at <url:vimhelp:utl-tutCopyLink#Vim instance>.
+  
+- Spell checking in URLs.
+  URLs embedded in <url: and > should not be spell checked. (Unembedded URLs
+  cannot be excluded anyway because not parsesafe.)
 
 
 ==============================================================================
-9. Credits						*utl-credits*
+10. Credits						*utl-credits*
 
-Wolfgang Fleig, my partner for his for his help, co-authoring, dialectical
-    antithesis and sponsoring.
-Ines Paegert
-    for her impulses.
-Bram Moolenaar <Bram at moolenaar.net>
-    for the Vim editor.
-Barrie Stott <G.B.Stott at bolton.ac.uk>
-    for helping a lot with the documentation
+Tatjana Dreier, for her patience
+Wolfgang Fleig, my partner, for sponsoring, testing, feedback
+Ines Paegert, for her impulses.
+Bram Moolenaar <Bram at moolenaar.net>, for the Vim editor.
+Barrie Stott <G.B.Stott at bolton.ac.uk>, for helping a lot with the
+	documentation
 REKellyIV <Feral at FireTop.Com>
 Klaus Horsten <horsten at gmx.at>.
 Patrik Nyman <patrik.nyman at orient.su.se>
-Engelhard Heﬂ <Engelhard.Hess at artofbits.de>
+Engelhard He√ü <Engelhard.Hess at artofbits.de>
 Grant Bowman <grantbow at grantbow.com>
 Ward Fuller <wfuller at SeeBeyond.com>
 Mark S. Thomas <Mark.Thomas at SWFWMD.STATE.FL.US>
 William Natter <wnatter at nortelnetworks.com>
 Alex Jakushev <Alex.Jakushev at kemek.lt>
 Geoff Caplan <geoff at advantae.com>
-Bruno DÌaz <bruno.diaz at gmx.net>
+Bruno D√≠az <bruno.diaz at gmx.net>
 Michael Lesniak <ich at mlesniak.de>
 Janek Kozicki <janek at thenut.eti.pg.gda.pl>
+Olivier Teuli√®re <ipkiss at via.ecp.fr>
+Nathan Howell <nathan at atdot.ca> 
+Samuel Wright <sam.wright@celoxica.com>
+clemens fischer <ino-qc@spotteswoode.de.eu.org>
+Gabor Grothendieck <ggrothendieck@gmail.com>
+Bill Powell <bill@billpowellisalive.com>
+Jeremy Cantrell <jmcantrell at gmail.com>
+Charles E. Campbell <drchip@campbellfamily.biz>
+Al S. Budden <abudden at gmail.com>, for Pdf page addressing and idea to use
+	Windows start command as generic handler.
+Alpt <alpt@freaknet.org>
+Cristian Rigamonti <cri at linux.it>
+Olle Romo <olleromo at metasound.ch>
 
 
 ==============================================================================
 FOOTNOTES
 
------ id=foot1
-An URL like www.vim.org or stb@bf-consulting.de works via a simple heuristic
-support of Utl which is similar to what you know from your web browser.
-Utl completes  www.xxx.domain  into  http://www.xxx.domain  or
-stb@bf-consulting.de  into  mailto:stb@bf-consulting.de. See <URL:../pl
-ugin/utl.vim#r=Utl_checkHeuristicAbsUrl> for supported heuristics. You can
-extend the heuristics defined there.
+[20] But you can use something like:
+    <url:vimscript:!net use w: %5c%5c56.240.73.41%5cc$ myAdminPassword /user:administrator>
+    to authenticate (the %5c masks the \ in the URL). The Vimscript scheme and
+    masking will be explained later in the docs.
 
------ id=foot2
-This only works if you have configured Windows Explorer as text/directory
-handler, see <URL:config:#r=mt_dir>).
+[22] It is not sufficient to provide a media type handler variable to make
+    a new specific handler work. There has to be a file extension to
+    media type mapping defined, see <url:config:#r=new_mt>. Again, perform
+    Utl.vim with verbose mode set to get this illustrated - watch out for
+    section 'start media type handler processing' in the output.
+    If no mapping is defined, no handler variable will be evaluated, and
+    the file will be displayed in current Vim.
+    If a mapping is defined, a handler has to present (at runtime when such
+    a file is performed).
 
------ id=foot3
-I try to use lower case notations <url:xxx> for URLs that cannot be executed
-right away, whereas upper case samples <URL:xxx> should all be directly
-executable. Note that this is only a convention used in this document, the 
-case does not matter. URL: url: Url: are all fine.
+[23] NOte that you cannot include this line in your .vimrc because it is
+    :source'd before utl_rc.vim (which defines g:utl_cfg_hdl_mt_generic).
+    So either include/change it at <url:config:#r=utl_cfg_hdl_mt_text_directory>
+    or include it in the after-directory, see <url:vimhelp:after-directory#5.>
 
------ id=foot4
-In the current version of Utl the cache actually is really somewhat academic.
-The previous version, which was Thlnk-1.2, handled web URLs (http://...) using
-a web file retriever ( wget, see http://www.gnu.org/software/wget/wget.html ).
-HTML files were downloaded using wget into a local cache file and displayed
-using Vim, i.e. were always displayed as text. This was very cool for text
-files on the web because #tn= fragment addressing could be used. Example:
-<URL:http://www.ietf.org/rfc/rfc2396.txt#tn=^1.2.>. Within html files, which
-were readable enough in the text-view (in Vim) relative HTML hyperlinks could
-be executed directly through the cache. Now web URLs are handled in the
-mainstream manner by calling the web browser. Also people had to download
-wget. But I would like to reactivate the wget possibilities in a next version.
-Dynamic handler selection capabilities need to be added to Utl then.
+[24] If a typed URL clashes with a keyword or an abbreviated keyword
+    prefix it with a ./    Example:
+    If you want to open the literal URL "underCursor" use
+	:Utl openLink ./underCursor
 
------ id=foot5
-You can use the man: protocol to hotlink from a program source code file to
-the relevant man page. This makes use of the Man plugin, see |man-plugin|.
-Example:
+[25] The displayMode is currently only used for link targets displayed in Vim
+    and are ignored if the resource is displayed by an external handler.
 
-[myopen.c]
-.
-.
-.
-/* Opens file "filename".
- * See <URL:man:open#tn=flags is one of> for possible values of the `flags' 
- * argument.
- * The restrictions described under <URL:man:open#tn=^RESTRICTIONS> also
- * apply to this function.
- */
-    int
-myopen(char* filename, int flags)
-{
-    //
-    open(filename, flags, mode);
-    //
-}
-.
-.
-.
-EOF
+[26] I don't know why this isn't Vim's default...
+    Check if currently set with	  <url:vimscript:set wildmenu?>
+    Set it with		          <url:vimscript:set wildmenu>
+    Then retry the given <Tab> examples to see the difference.
+    For help see		  <url:vimhelp:'wildmenu'>
 
------ id=foot6
-You might want to try the following code:
+[27] For the third argument in  :Utl openLink  command (the  mode  argument)
+    only a few values are offered for completion. Actually any Vim command
+    that takes a file name as argument is allowed here. Colons are also
+    allowed if this gives you more Vim feeling. Examples:
+	:Utl openLink underCursor :edit	    " or
+        :Utl openLink underCursor :e
+    More exotic examples are:
+	:Utl openLink underCursor :vertical diffsplit
+	:Utl openLink underCursor :bad
+    This one does unfortunately not work as expected in Utl v3.0a:
+      :Utl openLink underCursor :e!
+    Switch on verbose mode to see why.
 
-:map ,m :call Mark()<cr>
-fu! Mark()
-  let g:file = Utl_utilSlash_ExpandFullPath()
-  "echo "DBG: g:ins= " . g:ins
-  let g:text = getline(".") 
-endfu
+[28] Unfortunately :U is not possible because of the :UseVimball standard
+    plugin command. I think that this is unnecessary polution of the name
+    space, Vimball should better have chosen an approach like Utl, e.g.
+    :Vimball use. 
 
-:iab XF <C-R>=g:file<cr>
-:imap XT #tn=<C-R>=g:text<cr>
+[29] The Ctrl-C is normally not needed under Unix. Also not needed under
+    Windows if the 'guioptions' contains 'a' Autoselect flag, see
+    <url:vimhelp:guioptions>.  :Utl openLink visual  just takes the
+    contents of the "* register, see <url:vimscript::reg *>. If you find
+    Ctrl-C is too inconvenient you could use mappings like these:
+    <url:../plugin/utl.vim#r=suggested_mappings_visual>
 
-Position the cursor at the intended target of the link and then execute the
-command  ,m  . For inserting a link to this position type  XF  to insert the
-file name and perhaps also  XT	to insert a fragment. 
+[30] You can use the Vim command  :asc  to get the hex value of a character,
+    see <url:vimscript::h asc>
 
+[31] Well, normally the 'save as' dialog offers the base name, you copy
+    this name and paste it for the construction of the link in your text
+    file, and then come back with the complete path into the mailer's
+    'save as' dialog.
+
+[32] The implementation is via a VBS script that uses the OLE Automation
+    capabilities of Outlook. Outlook Express does not support OLE Automation.
+
+[33] There are two plugins that allow browsing mbox files:
+    <url:http://www.vim.org/scripts/script_search_results.php?keywords=mbox>
+    Perhaps these can serve as a starting point an implementation for
+    mbox emails.
+
+[34] The general query format is 
+    date=<date>&from=<from>&subject=<subject>.
+    But only date is currently supported in the VBS script.
+    So if you received two mails within the same one or two minutes 
+    you cannot properly select the correct one (resending one of them to
+    yourself is a workaround).
+
+[35] You can use the man: protocol to hotlink from a program source code file
+    to the relevant man page. Utl.vim delegates to the  :Man  command, which
+    is implemented by the ManPageView plugin
+    <url:http://www.vim.org/scripts/script. php?script_id=489> Example:
+
+    [myopen.c]
+    .
+    .
+    .
+    /* Opens file "filename".
+     * See <url:man:open#tn=flags is one of> for possible values of the `flags' 
+     * argument.
+     * The restrictions described under <url:man:open#tn=^RESTRICTIONS> also
+     * apply to this function.
+     */
+	int
+    myopen(char* filename, int flags)
+    {
+	//
+	open(filename, flags, mode);
+	//
+    }
+    .
+    .
+    .
+    EOF
+
+
+[36]
+    * VimFootnotes : Insert various types of footnotes with Vim. 
+      [36_1] <url:http://www.vim.org/scripts/script.php?script_id=431>
+
+    * uri-ref : Easily insert references to URLs in emails
+      [36_2] <url:http://www.vim.org/scripts/script.php?script_id=76>
+
+    * Markdown syntax : Syntax file for Markdown text-to-HTML language  
+      [36_3] <url:http://www.vim.org/scripts/script.php?script_id=1242>
+      This is only the the syntax file. Markdown is a text-to-HTML conversion
+      tool and that text can contain footnote references, which are supported
+      by Utl.vim
+
+    Tip: When creating footnote references you'll often find yourself
+    searching for those footnotes, which is complicated because [ and ]
+    are magic characters. Search with \M preprended, e.g. \M[10], see
+    <url:vimhelp:%5cM>
+
+[37] You might wonder what is the difference between "[123]" and "[123]:".
+    Of course any character can follow follow. But it is treated
+    differently by utl.vim in case the reference gets forwarded
+    automatically if a fragment is appended like this:
+    [123]#xxx (this will be explained later). Aside from Utl.vim treatment I
+    guess it is good style to have a blank or tab coming after the closing
+    bracket ]. The format  [123]:  is used by the Markdown tool [36_3].
+
+[38] This seems to be a problem in some cases. For instance it makes
+    reference targets within comments of some programming languages 
+    impossible:
+
+	use Dumpvalue;	# [124] 
+	.
+	.
+	# [124] http://perldoc.perl.org/Dumpvalue.html  <-- Does not work
+
+[39] Keep in mind that a relative file is also an (file://) URL. Often files
+    in source code systems reference each other via relative files either in
+    comments or kinds of include- or call-statements. Examples:
+    ./prog.c has a comment line:  /* prog.h ... */
+    ./prog.c has an include statement:  #include "prog.h"
+    ./script.bat contains a line:  call otherScript.bat
+    ./script.sh contains a line:  source ./tools/otherScript.sh 
+    Quite often these references are directly suitable for being executed by
+    Utl.vim. Well, the more you use Utl.vim you get more "URL aware" and 
+    get the habit of writing comments and so on which are suitable as URLs.
+
+[40] It would be interesting to facilitate creation of links. For instance:
+    - drop files into Vim window. But insert as link, not the normal behavior
+      of opening and displaying the file,
+    - convert Vim marks into links. Within same Vim session, create a mark
+      at link target, goto to place from where you want to link, and a call
+      a command like  :Utl insertLink mark  to insert a file:// URL with
+      fragment.
+
+[41] Lookup table explained: Take a web URL retrieved with wget and displayed
+    in Vim (see |utl-tutscmhttp|) that contains a relative URL
+    ./other_page.html. This link could be resolved in v2.0 via the lookup
+    table. Problem was 1. that the implementation was buggy due to
+    normalization problems with URLs and 2. conceptual problem with wrong
+    scheme associations: Example: After having executed [1] (-> foot:1)
+    executing a link ./some_file.txt in the same source file lead to a link
+    foot:some_file.txt instead of /path/to_source_file/some_file.txt.
+
+[42] http://www.vim.org/scripts/script_search_results.php?keywords=wiki&
+     script_type=&order_by=rating&direction=descending&search=search
+
+[RFC3986] <url:http://www.ietf.org/rfc/rfc3986.txt>
+[RFC2396] <url:http://www.ietf.org/rfc/rfc2396.txt>
+
+[UTL_RC] ../plugin/utl_rc.vim
 
  vim:tw=78:ts=8:ft=help:norl:fdm=marker:fen
