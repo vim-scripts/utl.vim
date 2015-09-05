@@ -724,7 +724,7 @@ fu! s:Utl_processUrl(uriref, dispMode)
     call Utl_trace("  arg 3 - display Mode=`".a:dispMode."'") 
     exe 'let ret  = ' cbfunc . '("'.absuri.'", "'.fragment.'", "'.a:dispMode.'")'
     call Utl_trace("- call back function `".cbfunc."' returned list:`". join(ret,',') ."'")
-    exe "normal \<C-L>"	| " Redraw seems necessary for non GUI Vim under Unix'es
+    exe 'redraw!'	| " Redraw seems necessary for non GUI Vim under Unix'es
 
     if !len(ret)
 	call Utl_trace("- empty list -> no further processing")
@@ -1001,7 +1001,7 @@ fu! s:Utl_displayFile(localPath, dispMode)
 	let cmd = dispMode.' '.escLocalPath
 	call Utl_trace("- trying to load/display file with command: `".cmd."'\n")   " CR054_extra_nl
 	exe cmd
-	exe "normal \<C-L>"	| " Redraw seems necessary for non GUI Vim under Unix'es
+    exe 'redraw!' | " Redraw seems necessary for non GUI Vim under Unix'es
 
 	if bufwinnr(escLocalPath) != winnr()	" not loaded
 	    call Utl_trace("- not loaded.")
