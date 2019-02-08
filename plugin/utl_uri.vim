@@ -247,7 +247,12 @@ endfu
 fu! UriRef_getUri(uriref)
     let idx = match(a:uriref, '#')
     if idx==-1
-	return a:uriref
+        " check for special case :digits
+        let idx2 = match(a:uriref, ':[0-9]\+$')
+        if idx2==-1
+            return a:uriref
+        endif
+        return strpart(a:uriref, 0, idx2)
     endif
     return strpart(a:uriref, 0, idx)
 endfu
@@ -259,7 +264,12 @@ endfu
 fu! UriRef_getFragment(uriref)
     let idx = match(a:uriref, '#')
     if idx==-1
-	return '<undef>'
+        " check for special case :digits and translate to line=digits
+        let idx2 = match(a:uriref, ':[0-9]\+$')
+        if idx2==-1
+            return '<undef>'
+        endif
+        return "line=" . strpart(a:uriref, idx2+1, 9999)
     endif
     return strpart(a:uriref, idx+1, 9999)
 endfu
