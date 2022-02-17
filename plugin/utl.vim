@@ -1044,11 +1044,11 @@ fu! s:Utl_checkMediaType(path)
     let mt = ''
 
     " MS windows oriented
-    if ext==?'doc' || ext==?'dot' || ext==?'wrd'
+    if ext==?'doc' || ext==?'dot' || ext==?'wrd' || ext==?'docx'
         let mt = 'application/msword'
-    elseif ext==?'xls'
+    elseif ext==?'xls' || ext==?'xlsx'
         let mt = 'application/excel'
-    elseif ext==?'ppt'
+    elseif ext==?'ppt' || ext==?'pptx'
         let mt = 'application/powerpoint'
     elseif ext==?'wav'
         let mt = 'audio/wav'
